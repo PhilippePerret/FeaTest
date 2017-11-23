@@ -1,0 +1,96 @@
+STEP: NARRATION
+=================
+: ^         ^
+: |         |_____ Nom que prendra la dossier.
+: |
+: |_______  Indicateur de section. Il fera l'objet d'un
+:           dossier principal dans les FEATESTs.
+:           Correspond au `--step=` des options.
+
+FEATURES
+--------
+:     ^
+:     |________ Les lignes contenant '---' ou '====' ne sont pas prises en compte.
+: 
+
+: Dans cette section sont décrites toutes les fonctionnalités de la section, 
+: par type d'utilisateur.
+: Ici, le `as` fait référence à l'option `--as=U-TYPE`
+
+  AS: VISITOR
+  --------------
+
+:           Nom des fonctionnalités, pour composer le nom      | 
+:           des fichiers de test qui vont les tester :         |----------------.
+:           C'est cette partie qui est intéressante et qui     |                |
+:           permet de vérifier que tous les tests soient faits.|                |
+:                                                                               |
+: Ici on définit la liste des fonctionnalités du type                           |
+: de visiteur. Une fonctionnalité commence par un astérisque.                   |
+:                                                                               v
+    * peut consulter la liste des livres                               --- show_livre_list
+    * peut consulter la table des matières d'un livre                  --- show_livre_tdm
+    * peut consulter toutes les pages d'un livre                       --- show_each_page_of_livre
+    * -
+:   ^ ^
+:   | |___  Le "-" indique qu'il ne peut pas faire ce que
+:   |       font les utilisateurs suivants. Et ce sera testé.
+:   |
+:   |______ Une fonctionnalité est définie
+:           par une astérisque.
+:
+: Le type user suivant, qui a forcément plus de privilège que l'user précédent.
+: Il est marqué par la balise `UTYPE` pour `USER TYPE`. Il correspondra lui aussi
+: au nom du dossier en majuscules (dossier `inscrit` pour les tests particuliers)
+
+  AS: INSCRIT
+  --------------
+
+:     .------------ Indique qu'il peut faire tout ce que
+:     |             font les users avant lui et qu'il faut
+:     |             le tester.
+:     v
+    * +
+    * peut mémoriser une page de la collection                          --- memorise_page
+    * savoir s'il a lu une page dans une table des matières             --- know_read_not_read_in_tdm
+    * savoir s'il a lu une page sur la page affichée                    --- know_read_not_read_on_page
+    * marquer une page comme lue/non lue depuis la table des matières   --- mark_read_not_read_in_tdm
+    * marquer une page comme lue/non lue depuis la page affichée        --- mark_read_not_read_on_page
+    * voir le temps de lecture d'une page                               --- show_read_page_duration
+
+    : Un titre de rubrique qui représente un ensemble de fonctionnalités
+    : L'ensemble de fonctionnalités est représenté par trois astéristiques
+    : puisqu'une fonctionnalité est un astéristique.
+    
+    *** Gérer ta table des matières personnelles
+    * voir sa table des matières personnelles (vos pages)               --- display_tdmp
+    * ajouter des pages à sa tdm perso depuis tdm de livre              --- add_page_tdmp_from_tdm
+    * ajouter des pages à sa tdm perso depuis la page affichée          --- add_page_tdmp_from_page
+    * retirer des pages à sa tdm perso depuis sa tdm perso              --- sup_page_tdmp_from_tdmp
+    * retirer une page de sa tdm perso depuis la page affichée          --- sup_page_tdmp_from_page
+    * -
+:     ^
+:     |
+:     |_________ Il ne peut pas faire ce que fait l'user suivant
+:                et il faut le tester.
+
+
+  AS: ADMIN
+  ------------
+
+    * +
+    * créer des pages, chapitre et sous-chapitres                       --- create_page_chap_schap
+    * détruire une page, sous-chapitre et chapitre                      --- remove_page_chap_schap
+    * modifier/enregistrer la table des matières d'un livre             --- add_sup_page_in_tdm_livre
+    * déplacer les éléments dans la table des matières                  --- move_page_in_tdm_livre
+    * modifier/enregistrer les données d'une page existante             --- modify_data_page
+    * mettre une page en lecture ou autre statut                        --- modify_status_page
+    * modifier/enregistrer le texte d'une page existante                --- modify_texte_page
+    * forcer la reconstruction d'une page                               --- force_update_page
+    * forcer la reconstruction de toutes les pages                      --- force_update_all_page
+
+    -* détruire la tdm d'un livre (on doit passer par mysql)
+:   ^
+:   |
+:   |________ Définit une "contre fonctionnalité" c'est-à-dire quelque chose
+:             que l'utilisateur ne doit pas pouvoir faire.

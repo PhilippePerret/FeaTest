@@ -1,0 +1,43 @@
+.TH man 1 "22 11 2017" "1.0" "featest"
+.PP
+.SH NAME
+.PP
+featest - Test par fonctionnalit\['e] et user
+.PP
+.SH SYNOPSIS
+.PP
+.B featest {path/to/file} [options]
+.PP
+.RS
+Run tests in `path/to/file` folder, as they're defined with `options` (see below).
+.RE
+.PP
+.SH DESCRIPTION
+.PP
+.SH OPTIONS
+.PP
+Options in featest are more than options... They really define tests.
+.PP
+.B --as=USERTYPE
+.PP
+.RS
+User(s) tests must use to run against.
+.RE
+.PP
+.RS
+This can be a list of user-types separated with commas (p.e. `--as=visitor,admin`)
+.RE
+.PP
+.RS
+This can also be 'all' (default, `--as=all`) to use all user-types.
+.RE
+.PP
+.SH EXAMPLES
+.PP
+.SH SEE ALSO
+.PP
+.SH BUGS
+.PP
+.SH AUTHOR
+.PP
+Philippe Perret <philippe.perret@yahoo.fr>
