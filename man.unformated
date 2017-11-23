@@ -78,6 +78,22 @@ Options in featest are more than options... They really define tests.
   Traite les tests de façon exaustive, c'est-à-dire que les listes ne sont pas
   raccourcies.
 
+.B --fast
+
+  Do not pause durint the test. In normal mode, test pauses to let programer takes
+  a look at the pages, the forms, the messages, and so on. In fast mode, no pause
+  at all.
+
+.B --wait=COEFFICIENT
+
+  You can slow down or accelerate the pauses during the tests with this option. 1 is
+  the default value. A value between 0 and 1 accelerates the test, a value greater than
+  1 slows down the test, letting the programer taking a look at the interface.
+
+.B --[no-fail-fast
+
+  As of RSpec, with this option on, tests stop at first error.
+
 ."
 ." ============= EXAMPLES =============
 ."

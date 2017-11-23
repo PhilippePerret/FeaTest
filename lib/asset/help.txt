@@ -7,7 +7,7 @@
   ALIAS BASH  :
                                   (alias défini dans ~/.bash_profile)
 
-      $> test_spole[ --online]
+      $> featest [ --online]
               [ --from=<etape>]
               [ --to=<etape>]
               [ --step=<etape]
@@ -136,21 +136,20 @@
       est que le message d'erreur, si `--debug` n'est pas activé, est réduit au
       simple message d'erreur, qui n'est pas toujours très éclairant.
 
-    --debug
 
-      Pour afficher les messages complets d'erreurs.
+  ------------------------------------------------------------------------------
+    FICHIER init.rb
+    
+      Le fichier ./spec/features/featest/init.rb permet d'initialiser les
+      featests en fonction de l'application testée.
 
-    --debug-level=<1-9>
+      On peut définir l'ordre des étapes à jouer par :
 
-      Définit le niveau de débuggage du test. On utilise la constante
-      DEBUG_LEVEL pour afficher ou non les éléments ne retour, par exemple
-      les valeurs dans une boucle. Exemple :
-      DEBUG_LEVEL < 5 || notice('Ce texte apparait au niveau 6 et au-dessus')
+          FeaTest.current.steps_sequence = [....]
 
-    --random
+      En cas de non définition, l'ordre des étapes sera celui déterminé
+      par la relève normale dans le dossier .../featest/sheets/
 
-      Joue toutes les étapes ou les étapes choisies dans un ordre aléatoire,
-      pour provoquer peut-être des erreurs inattendues.
 
   ------------------------------------------------------------------------------
 

@@ -22,8 +22,8 @@ module FeaTestModule
           ETAPES[key].parse
         end
 
-        puts "ETAPES : #{ETAPES.inspect}"
-        puts "USER_TYPES: #{USER_TYPES.inspect}"
+        #puts "ETAPES : #{ETAPES.inspect}"
+        #puts "USER_TYPES: #{USER_TYPES.inspect}"
         if ETAPES.empty?
           error "Aucune feuille de test FeaTest n'a été trouvé dans `#{folder}`…"
           exit 1
@@ -39,6 +39,9 @@ module FeaTestModule
     # --------------------------------------------------------------------------------
 
     attr_reader :path
+    attr_reader :step
+
+
     def initialize fpath
       @path = fpath
     end
@@ -47,11 +50,12 @@ module FeaTestModule
     # données de test.
     def parse
       current_utype = nil
+      current_features_group = nil
       File.open(path).readlines.each do |line|
         line = line.strip
         line.start_with?(':') && next # commentaire
         line.gsub(/[-=]/,'') != '' || next # soulignement
-        puts "line: #{line}"
+        #puts "line: #{line}"
         case line
         when /\* ([\-\+])/
           case $1
@@ -63,13 +67,24 @@ module FeaTestModule
           utype = ($1||'').strip.downcase.to_sym
           desc  = ($2||'').strip
           USER_TYPES.key?(utype) || USER_TYPES.merge!(
-            utype => {description: desc, type: utype, features: Array.new, 
+            utype => {description: desc,   type: utype, 
+                      features: Array.new, features_out: Array.new,
                       previous_user: current_utype, next_user: nil}
           )
           current_utype && USER_TYPES[current_utype].merge!(next_user: utype)
           current_utype = utype
         when /^\* (.*)---(.*)$/
-          USER_TYPES[current_utype][:features] << {hname: $1.strip, affixe: $2.strip} 
+          USER_TYPES[current_utype][:features] << {
+            hname: $1.strip, affixe: $2.strip, group: current_features_group
+          }
+        when /^\-\* (.*)---(.*)$/
+          USER_TYPES[current_utype][:features_out] << {hname: $1.strip, affixe: $2.strip}
+        when /^\*\*\* (.*)$/
+          current_features_group = $1.strip
+        when /^STEP:(.*)$/i
+          @section = $1.strip
+        else
+          error "La ligne '#{line}' n'a pas été traitée."
         end
       end
     end

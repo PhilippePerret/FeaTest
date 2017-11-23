@@ -1,0 +1,73 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.8	//
+Array	lib/module/test/build_test.rb	/^  class Array$/;"	c	class:FeaTestModule.create_test_file_for_user
+CLI	lib/required/cli.rb	/^class CLI$/;"	c
+FeaTest	lib/required/FeaTest/instance/inst.rb	/^class FeaTest$/;"	c
+FeaTestModule	lib/module/help/main.rb	/^module FeaTestModule$/;"	m
+FeaTestModule	lib/module/test/build_test.rb	/^module FeaTestModule$/;"	m
+FeaTestModule	lib/module/test/data_and_states.rb	/^module FeaTestModule$/;"	m
+FeaTestModule	lib/module/test/featest_sheets.rb	/^module FeaTestModule$/;"	m
+FeaTestModule	lib/module/test/main.rb	/^module FeaTestModule$/;"	m
+FeaTestModule	lib/module/test/prepare.rb	/^module FeaTestModule$/;"	m
+FeaTestModule	lib/module/test/run_test.rb	/^module FeaTestModule$/;"	m
+FeaTestModule	lib/required/FeaTest/class/errors.rb	/^module FeaTestModule$/;"	m
+FeaTestModule	lib/required/FeaTest/class/run.rb	/^module FeaTestModule$/;"	m
+FeaTestModule	lib/required/FeaTest/instance/paths.rb	/^module FeaTestModule$/;"	m
+FeaTestSheet	lib/module/test/featest_sheets.rb	/^  class FeaTestSheet$/;"	c	class:FeaTestModule
+File	lib/required/extensions/File.rb	/^class File$/;"	c
+Help	lib/module/help/main.rb	/^  class Help$/;"	c	class:FeaTestModule
+String	lib/required/extensions/String.rb	/^class String$/;"	c
+analyze_sheets	lib/module/test/featest_sheets.rb	/^      def analyze_sheets(folder)$/;"	f	class:FeaTestModule.FeaTestSheet
+build_and_run_tests	lib/module/test/main.rb	/^  def build_and_run_tests$/;"	f	class:FeaTestModule
+build_test	lib/module/test/build_test.rb	/^  def build_test$/;"	f	class:FeaTestModule
+create_test_file_for_user	lib/module/test/build_test.rb	/^  def create_test_file_for_user user_type$/;"	f	class:FeaTestModule
+define_steps	lib/module/test/prepare.rb	/^  def define_steps$/;"	f	class:FeaTestModule
+define_users	lib/module/test/prepare.rb	/^  def define_users$/;"	f	class:FeaTestModule
+display	lib/module/help/main.rb	/^      def display$/;"	f	class:FeaTestModule.Help
+entete_feedback	lib/module/test/run_test.rb	/^  def entete_feedback$/;"	f	class:FeaTestModule
+error	lib/required/divers/messages.rb	/^def error msg$/;"	f
+exhaust	lib/module/test/build_test.rb	/^    def exhaust default = 3$/;"	f	class:FeaTestModule.create_test_file_for_user.Array
+existsOrRaise	lib/required/extensions/File.rb	/^    def existsOrRaise fpath, err_msg$/;"	f	class:File
+fatale_error	lib/required/divers/messages.rb	/^def fatale_error msg$/;"	f
+featest_folder	lib/required/FeaTest/instance/paths.rb	/^  def featest_folder$/;"	f	class:FeaTestModule
+featest_valide?	lib/module/test/main.rb	/^  def featest_valide?$/;"	f	class:FeaTestModule
+full_downcase	lib/required/extensions/String.rb	/^  def full_downcase$/;"	f	class:String
+get_prop_value	lib/required/cli.rb	/^    def get_prop_value paire$/;"	f	class:CLI
+help	lib/required/FeaTest/class/run.rb	/^  def help$/;"	f	class:FeaTestModule
+human_user	lib/module/test/data_and_states.rb	/^  def human_user utype$/;"	f	class:FeaTestModule
+initialize	lib/module/test/featest_sheets.rb	/^    def initialize fpath$/;"	f
+initialize	lib/required/FeaTest/instance/inst.rb	/^  def initialize$/;"	f
+main_folder	lib/required/FeaTest/instance/paths.rb	/^  def main_folder$/;"	f	class:FeaTestModule
+notice	lib/required/divers/messages.rb	/^def notice msg$/;"	f
+offline?	lib/module/test/data_and_states.rb	/^  def offline?$/;"	f	class:FeaTestModule
+online?	lib/module/test/data_and_states.rb	/^  def online? ; !offline? end$/;"	f	class:FeaTestModule
+option	lib/required/cli.rb	/^    def option key$/;"	f	class:CLI
+param	lib/required/cli.rb	/^    def param key$/;"	f	class:CLI
+parse	lib/module/test/featest_sheets.rb	/^    def parse$/;"	f
+parse	lib/required/cli.rb	/^    def parse$/;"	f	class:CLI
+prepare	lib/module/test/prepare.rb	/^  def prepare$/;"	f	class:FeaTestModule
+real_code_for_section	lib/module/test/build_test.rb	/^  def real_code_for_section section, utype$/;"	f
+real_file_for_section	lib/module/test/build_test.rb	/^  def real_file_for_section section, utype$/;"	f
+rectif_options	lib/required/cli.rb	/^    def rectif_options$/;"	f	class:CLI
+require_folder	lib/required/divers/handy_methods.rb	/^def require_folder fpath$/;"	f
+require_module	lib/required/divers/handy_methods.rb	/^def require_module mname$/;"	f
+retour_accueil	lib/module/test/build_test.rb	/^    def retour_accueil$/;"	f	class:FeaTestModule.create_test_file_for_user
+run	lib/required/FeaTest/class/run.rb	/^  def run$/;"	f	class:FeaTestModule
+run_test	lib/module/test/run_test.rb	/^  def run_test$/;"	f	class:FeaTestModule
+run_test	lib/required/FeaTest/class/run.rb	/^  def run_test$/;"	f	class:FeaTestModule
+search_for_included_file	lib/module/test/build_test.rb	/^  def search_for_included_file fname, fpath$/;"	f
+section_template	lib/module/test/build_test.rb	/^  def section_template$/;"	f	class:FeaTestModule
+sheets_folder	lib/required/FeaTest/instance/paths.rb	/^  def sheets_folder$/;"	f	class:FeaTestModule
+steps_by_users_folder	lib/required/FeaTest/instance/paths.rb	/^  def steps_by_users_folder$/;"	f	class:FeaTestModule
+steps_folder	lib/required/FeaTest/instance/paths.rb	/^  def steps_folder$/;"	f	class:FeaTestModule
+steps_valides_or_raise?	lib/module/test/prepare.rb	/^  def steps_valides_or_raise?$/;"	f	class:FeaTestModule
+test_file_footer	lib/module/test/build_test.rb	/^  def test_file_footer$/;"	f	class:FeaTestModule
+titleize	lib/required/extensions/String.rb	/^  def titleize$/;"	f	class:String
+traite_comments_in	lib/module/test/build_test.rb	/^  def traite_comments_in code$/;"	f
+traite_inclusions_in	lib/module/test/build_test.rb	/^  def traite_inclusions_in fpath$/;"	f
+upcase	lib/required/extensions/String.rb	/^  def upcase$/;"	f	class:String
+wait	lib/module/test/build_test.rb	/^    def wait time$/;"	f	class:FeaTestModule.create_test_file_for_user

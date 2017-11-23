@@ -10,6 +10,8 @@ module FeaTestModule
     featest_valide?
     Dir.chdir(main_folder) do
       prepare
+      build_test
+      run_test
     end
   end
 

@@ -1,5 +1,6 @@
 # encoding: utf-8
 class CLI
+
   # Définit les options courtes (-) vers les longues (--)
   SHORT_OPT_TO_FULL = {
     'r'   => :random,
@@ -58,10 +59,24 @@ class CLI
           ARGS[:params] << a
         end
       end
+      rectif_options
     end
     #/parse
-    #
 
+    # Permet de rectifier certaines valeurs d'options de la
+    # commande.
+    def rectif_options
+      ARGS[:'debug-level'] || ARGS.merge!(:'debug-level' => 0) 
+      ARGS[:'non-exhaustif'] && ARGS.merge!(exhaustif: false)
+      if ARGS[:fast]
+        ARGS[:wait]   = 0
+        ARGS[:silent] = true
+      end
+      ARGS[:wait] = ARGS[:wait].nil? ? 1 : ARGS[:wait].to_i
+      ARGS[:fail_fast] = !!ARGS[:'fail-fast']
+    end
+
+    
     def get_prop_value paire
       if paire.match(/=/) 
         prop, val = paire.split('=')

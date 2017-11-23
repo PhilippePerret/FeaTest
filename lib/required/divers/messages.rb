@@ -16,6 +16,12 @@ def error msg
 end
 
 
+# Une erreur susceptible d'interrompre la visite testée
+def fatale_error msg
+  error "\n#\n#\n# ERREUR : #{msg}\n#\n#\n#"
+  exit 1
+end
+
 def notice msg
   puts "\033[44m#{msg}\033[0m"
 end

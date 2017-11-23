@@ -9,9 +9,29 @@ module FeaTestModule
   def prepare
     FeaTestSheet.analyze_sheets(sheets_folder)
     define_steps
+    define_users
     require './spec/spec_helper'
+    # Si un fichier init.rb existe, on le joue
+    init_file = File.join(featest_folder,'init.rb')
+    if File.exist?(init_file)
+      puts "Un fichier init.rb exist, je le joue."
+      require init_file
+    end
   end
 
+  def define_users
+    # Le ou les types de user à traiter
+    as = CLI.option(:as)
+      if as.nil?
+        AS << :visitor
+      elsif as.match(/,/)
+        as.split(',').each{|utype| AS << utype.strip.to_sym}
+      elsif as == 'all'
+        USER_TYPES.keys.each{|ut| AS << ut}
+      else
+        AS << as.to_sym
+      end
+  end
   def define_steps
     etapes = FeaTestSheet::ETAPES
     @steps =
