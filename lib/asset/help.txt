@@ -1,0 +1,163 @@
+
+
+
+=====================================================================
+  AIDE SCRIPT `_visite_testee_run_.rb`
+
+  ALIAS BASH  :
+                                  (alias défini dans ~/.bash_profile)
+
+      $> test_spole[ --online]
+              [ --from=<etape>]
+              [ --to=<etape>]
+              [ --step=<etape]
+              [ --as=<user>]
+              [ --exhaustif]
+              [ --grade=<grade de 1 à 9>]
+              [ --wait=<coefficiant attente>]
+              [ --quiet/--silent]
+              [ --debug]
+              [ --debug-level=<1 à 9>]
+              [ --random]
+
+
+      Pour lancer la version intégrale et complète des tests :
+
+        $> test_spole --as=all --exhaustif
+
+        (attention : ça peut prendre la nuit, car ça teste le site de façon
+         exhaustive, avec chacun des utilisateurs possibles l'un après l'autre)
+
+    --online
+
+      Si l'option `--online` est choisie, le test se fait en online. Noter que
+      certaines opérations, comme le dépôt de messages sur le forum, ne se font
+      pas en online, mais seulement en offline.
+
+    --from=<etape>
+
+      Définit l'étape de départ pour le test. La liste des étapes est définie
+      en haut du fichier `_visite_testee_run_.rb` qui construit le test.
+      Si non définie, on commence au début.
+      Voir ci-dessous la liste actuelle des étapes.
+
+    --to=<etape>
+
+      Définit l'étape de fin pour le test. La liste des étapes est définie en
+      haut du fichier `_visite_testee_run_.rb`.
+      Si non définie, on termine à la fin.
+      Voir ci-dessous la liste actuelle des étapes.
+
+    --step=<etape>
+
+      Définit la seule étape à jouer. En fait, définit --from et --to en les
+      mettant sur la même valeur.
+      Voir ci-dessous la liste actuelle des étapes.
+
+    --steps=<etape1>,<etape2>,...<etapeN>
+
+      Définit les N étapes à jouer. Noter qu'il ne faut absolument pas d'espaces
+      entre les noms d'étapes. Par exemple :
+
+        --steps=narration,blog,forum
+
+      Noter que le test sera joué **dans l'ordre défini ci-dessus**, et que
+      certains problèmes pourraient survenir de ce fait, intéressants parfois.
+      Voir ci-dessous la liste actuelle des étapes.
+
+    --as=<user[s]|all>
+
+      Définit le statut de l'user qui doit visiter pour faire les tests. En
+      fonction de son statut, certains tests seront modifiés.
+      On peut traiter plusieurs users en les séparant par des virgules :
+          --as=admin,visitor,inscrit    // pas d'espaces !
+
+      <user>
+                __USERS__
+                all         Tous les users possibles sont traités
+
+    --exhaustif
+
+      Si cette option est présente, c'est un test EXHAUSTIF qui est produit.
+      Un exemple valant mieux que de longs discours… par exemple, pour le test
+      des livres de la collection, si on est en mode exhaustif, on teste TOUS
+      les livres, alors qu'en mode non exhautif, on ne traite que trois livres
+      grâce à cette condition :
+
+          book_ids = <select tous les livres.exhaust
+
+      On peut envoyer à la méthode `Array#exhaust` le nombre d'éléments par
+      défaut en cas de non exhaustivité (mode "non exhaustif").
+
+    --non-exhaustif
+
+      Correspond à l'absence de l'option `--exhaustif`, pour la clarté, on peut
+      bien le préciser de cette manière.
+
+    --grade=<0-9>
+
+      Définit le grade que doit avoir l'utilisateur.
+      Fonctionne pour tous les users hormis administrateur et simple visiteur.
+
+    --wait=<coefficiant d'attente>
+
+      Permet de définir le coefficiant d'attent, qui a pour valeur par défaut
+      1.
+      Si le nombre est supérieur à 1, l'attente sera allongée entre les
+      pause (il y a de nombreuses pauses pour pouvoir suivre l'affichage des
+      page).
+      Si le nombre est entre 0 et 1, l'attente sera raccourcie.
+      Si le nombre est 0, toute attente est supprimée.
+
+    --silent / --quiet
+
+      En temps normal, dans les tests, on peut utiliser la méthode `say` pour
+      annoncer ce que l'utilisateur va faire. On peut désactiver cette
+      fonctionnalité (qui consomme du temps) en utilisant une de ces deux
+      options.
+      Noter que l'option générale --fast
+
+    --fast
+
+      Accélère les tests en supprimant le temps d'attente (--wait) et l'afficha-
+      ge des messages "say" (qui annoncent les prochaines opérations).
+
+    --[no-]fail-fast
+
+      Comme pour RSPEC, si l'option existe, on s'arrête à la première erreur,
+      sinon, si `nofail-fast`, on s'arrête en bout de test. Par défaut, on va
+      au bout du test
+
+      Noter cependant que cette option agit de façon particulière, puisque les
+      tests de ce programme sont en fait un unique test. Donc, même avec l'op-
+      tion `--no-fail-fast`, ils s'interromperaient dès la première erreur.
+      Mais ici, le corps du code de test de chaque section est enroulé dans un
+      rescue qui empêche d'arrêter le test à la première erreur. La contrepartie
+      est que le message d'erreur, si `--debug` n'est pas activé, est réduit au
+      simple message d'erreur, qui n'est pas toujours très éclairant.
+
+    --debug
+
+      Pour afficher les messages complets d'erreurs.
+
+    --debug-level=<1-9>
+
+      Définit le niveau de débuggage du test. On utilise la constante
+      DEBUG_LEVEL pour afficher ou non les éléments ne retour, par exemple
+      les valeurs dans une boucle. Exemple :
+      DEBUG_LEVEL < 5 || notice('Ce texte apparait au niveau 6 et au-dessus')
+
+    --random
+
+      Joue toutes les étapes ou les étapes choisies dans un ordre aléatoire,
+      pour provoquer peut-être des erreurs inattendues.
+
+  ------------------------------------------------------------------------------
+
+    LISTE ACTUELLE DES ÉTAPES
+    =========================
+    (note : cette liste est actualisée automatiquement)
+
+      __ETAPES__
+
+=====================================================================

@@ -24,7 +24,10 @@ featest - Test par fonctionnalité et user
 
 .SH DESCRIPTION
 
+  Folder hierarchy.
 
+    ./spec/features/ featest/sheets/
+                            /steps/
 
 
 ."
@@ -43,6 +46,37 @@ Options in featest are more than options... They really define tests.
 
   This can also be 'all' (default, `--as=all`) to use all user-types.
 
+.B --step=STEP
+
+.B --steps=FIRST_STEP-LAST_STEP
+
+.B --steps=STEP1,STEP2...,STEPN
+
+  Defines which steps must be ran. It can be a uniq step with `step`, a range
+  of steps with `first-last` or a list.
+
+  Note : no comma at all in step list.
+
+.B -r/--random
+
+  Run tests randomly.
+
+.B --offline
+
+  To test OFFLINE (development). It's the default.
+
+.B --online
+
+  To test ONLINE (test/production)
+
+.B -dg/--debug
+
+  Display debug messages and error backtraces.
+
+.B --exhaustif
+
+  Traite les tests de façon exaustive, c'est-à-dire que les listes ne sont pas
+  raccourcies.
 
 ."
 ." ============= EXAMPLES =============

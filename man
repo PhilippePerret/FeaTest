@@ -14,6 +14,16 @@ Run tests in `path/to/file` folder, as they're defined with `options` (see below
 .PP
 .SH DESCRIPTION
 .PP
+.RS
+Folder hierarchy.
+.RE
+.PP
+.RS
+.RS
+./spec/features/ featest/sheets/ /steps/
+.RE
+.RE
+.PP
 .SH OPTIONS
 .PP
 Options in featest are more than options... They really define tests.
@@ -30,6 +40,44 @@ This can be a list of user-types separated with commas (p.e. `--as=visitor,admin
 .PP
 .RS
 This can also be 'all' (default, `--as=all`) to use all user-types.
+.RE
+.PP
+.B --step=STEP
+.PP
+.B --steps=FIRST_STEP-LAST_STEP
+.PP
+.B --steps=STEP1,STEP2...,STEPN
+.PP
+.RS
+Defines which steps must be ran. It can be a uniq step with `step`, a range of steps with `first-last` or a list.
+.RE
+.PP
+.RS
+Note : no comma at all in step list.
+.RE
+.PP
+.B -r/--random
+.PP
+.RS
+Run tests randomly.
+.RE
+.PP
+.B --offline
+.PP
+.RS
+To test OFFLINE (development). It's the default.
+.RE
+.PP
+.B --online
+.PP
+.RS
+To test ONLINE (test/production)
+.RE
+.PP
+.B -dg/--debug
+.PP
+.RS
+Display debug messages and error backtraces.
 .RE
 .PP
 .SH EXAMPLES
