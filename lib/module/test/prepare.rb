@@ -7,6 +7,8 @@ module FeaTestModule
   # qu'on en tire les spécificités du test à mener.
   #
   def prepare
+    __dg("-> prepare",1)
+    require_module 'sheets'
     FeaTestSheet.analyze_sheets(sheets_folder)
     define_steps
     define_users
@@ -14,23 +16,28 @@ module FeaTestModule
     # Si un fichier init.rb existe, on le joue
     init_file = File.join(featest_folder,'init.rb')
     if File.exist?(init_file)
-      puts "Un fichier init.rb exist, je le joue."
+      __dg("init.rb existe. On le joue",3)
       require init_file
     end
+    __dg("<- prepare",1) 
   end
 
   def define_users
+    __dg("-> define_users",2) 
     # Le ou les types de user à traiter
     as = CLI.option(:as)
-      if as.nil?
-        AS << :visitor
-      elsif as.match(/,/)
-        as.split(',').each{|utype| AS << utype.strip.to_sym}
-      elsif as == 'all'
-        USER_TYPES.keys.each{|ut| AS << ut}
-      else
-        AS << as.to_sym
-      end
+    __dg("   --as=#{as.inspect}",4)
+    if as.nil?
+      AS << :visitor
+    elsif as.match(/,/)
+      as.split(',').each{|utype| AS << utype.strip.to_sym}
+    elsif as == 'all'
+      FeaTestSheet::USER_TYPES.keys.each{|ut| AS << ut}
+    else
+      AS << as.to_sym
+    end
+    __dg("<- define_users",2)
+    __dg("   (AS = #{AS.inspect})")
   end
   def define_steps
     etapes = FeaTestSheet::ETAPES

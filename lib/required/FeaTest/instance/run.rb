@@ -5,13 +5,20 @@ module FeaTestModule
     case CLI.param(1)
     when 'help'
       help
+    when 'check'
+      CLI::PARAMS_ORDER[:file_path] = 1
+      require_module 'check'
+      check_and_display
+    when 'build'
+      CLI::PARAMS_ORDER[:file_path] = 1
+      require_module 'build'
     else
-      run_test
+      prepare_build_and_run_test
     end
   end
 
 
-  def run_test
+  def prepare_build_and_run_test
     require_module 'test'
     build_and_run_tests
   end

@@ -28,7 +28,7 @@ class CLI
     # Retourne la valeur de l'option +key+
     # @usage    CLI.option(<key>)
     def option key
-      ARGS[:options][key]
+      ARGS[:options][key.to_sym]
     end
 
     # Retourne la valeur du paramètre de clé +key+
@@ -48,39 +48,44 @@ class CLI
       ARGV.each do |a|
         case a
         when /^--(.*)$/
-          full_opt, value = get_prop_value(a[2..-1])
-          ARGS.merge!(full_opt.to_sym => value)
+          full_opt, value = get_prop_value($1.strip)
+          ARGS[:options].merge!(full_opt.to_sym => value)
         when /^-(.*)$/
-          short_opt, value = get_prop_value(a[1..-1])
+          short_opt, value = get_prop_value($1.strip)
           full_opt = SHORT_OPT_TO_FULL[short_opt]
-          ARGS.merge!(full_opt => value)
+          ARGS[:options].merge!(full_opt => value)
         else
           # un argument
           ARGS[:params] << a
         end
       end
       rectif_options
+      __dg("<- CLI.parse",2)
+      __db("   with: ARGS = #{ARGS.inspect}",4)
     end
     #/parse
 
     # Permet de rectifier certaines valeurs d'options de la
     # commande.
     def rectif_options
-      ARGS[:'debug-level'] || ARGS.merge!(:'debug-level' => 0) 
-      ARGS[:'non-exhaustif'] && ARGS.merge!(exhaustif: false)
-      if ARGS[:fast]
-        ARGS[:wait]   = 0
-        ARGS[:silent] = true
+      opts = ARGS[:options]
+      opts[:'debug-level'] || opts.merge!(:'debug-level' => 0) 
+      opts[:'debug-level'] = opts[:'debug-level'].to_i
+      opts[:'non-exhaustif'] && opts.merge!(exhaustif: false)
+      if opts[:fast]
+        opts[:wait]   = 0
+        opts[:silent] = true
       end
-      ARGS[:wait] = ARGS[:wait].nil? ? 1 : ARGS[:wait].to_i
-      ARGS[:fail_fast] = !!ARGS[:'fail-fast']
+      opts[:wait] = opts[:wait].nil? ? 1 : opts[:wait].to_i
+      opts[:fail_fast] = !!opts[:'fail-fast']
+      ARGS[:options].merge!(opts)
     end
 
     
     def get_prop_value paire
       if paire.match(/=/) 
         prop, val = paire.split('=')
-        val = val.gsub(/^["']?(.*)["']?$/)
+        val.gsub!(/^["']?(.*)["']?$/,'\1')
         [prop, val]
       else
         [paire, true]

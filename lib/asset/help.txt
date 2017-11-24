@@ -4,6 +4,66 @@
 =====================================================================
   AIDE SCRIPT `_visite_testee_run_.rb`
 
+  PROCÉDURE POUR CRÉER DES FEAT TESTS
+  ===================================
+  
+  Procédure générale
+  ------------------
+  1- Définition des fonctionnalités par `step` dans le dossier featest/steps/
+  2- Demande de construction des steps (optionnel)
+  3- Définition du code de test de chaque fonctionnalité et contre-fonctionnalité
+  4- Lancement du test avec choix des étapes à jouer, des utilisateurs
+
+
+  Procédure détaillée
+  -------------------
+  
+  1- Définition des fonctionnalités par `step`
+  
+    Une `step` peut être compris comme une `section` du site. C'est par exemple
+    la section Forum d'un site.
+
+    Pour définir les tests de cette section, on crée son fichier :
+
+      `featest/steps/<step>.ftest`
+
+      Par exemple, pour le forum :
+
+      `featest/steps/forum.ftest`
+
+    C'est à l'intérieur de ce fichier que vont être définies et décrites sommairement
+    toutes les fonctionnalité de l'étape (p.e. du forum). Voir plus "Format des fichiers
+    .ftest."
+
+  2- Demande de construction des steps (optionnel)
+
+    Plutôt que de créer les fichiers qui vont contenir le code de test "à la main", on
+    peut lancer la commande `featest build` (à la racine du site) qui va construire tous
+    les fichiers fonctionnalités qu'il ne trouve pas. C'est le plus sûr moyen de travailler
+    avec des noms valides. la commande `featest check` permet quant à elle de s'assurer
+    qu'on a tous les éléments valides.
+
+  3- Définition du code de test de chaque fonctionnalité
+
+    Dans chaque fichier de code de fonctionnalité créé par l'étape précédente, on peut
+    définir le test à opérer.
+
+    On peut se servir ici de toutes les méthodes pratiques qui ont été créées dans les
+    supports de test.
+
+  4- Lancement des tests.
+
+    Il suffit ensuite d'utiliser la commande `featest`, avec les options voulues, pour
+    lancer les tests.
+
+    Par exemple, `featest --as=inscrit --fail-fast` lancera un test seulement sur l'user
+    de type `inscrit` et s'arrêtera à la première erreur.
+    
+
+  FORMAT DES FICHIERS .ftest
+  ==========================
+
+
   ALIAS BASH  :
                                   (alias défini dans ~/.bash_profile)
 

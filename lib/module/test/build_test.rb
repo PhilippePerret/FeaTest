@@ -12,8 +12,8 @@ module FeaTestModule
 
     # On détruit le dossier qui va contenir les feuilles de tests.
     # Rappel : il y en aura une par type de user choisi
-    puts "--> Recréer le dossier des étapes par user"
-    puts "    steps_by_users_folder : #{steps_by_users_folder}"
+    __dg("* Recréation du dossier des étapes par user",3)
+    __db("  steps_by_users_folder : #{steps_by_users_folder}",5) 
     FileUtils.rm_rf steps_by_users_folder
     `mkdir -p "#{steps_by_users_folder}"`
 
@@ -23,14 +23,14 @@ module FeaTestModule
     #   défini par l'option --as, qui peut être 'all' pour les prendre tous
     #
     # ---------------------------------------------------------------------
-    puts "*** Boucle sur chaque type d'user"
+    __dg("*** Boucle sur chaque type d'user",3) 
+    __dg("    = AS = #{AS.inspect}",5) 
     AS.each do |utype|
-      puts "    * traitement de l'user de type #{utype.inspect}"
+      puts "  * traitement de l'user de type #{utype.inspect}"
       create_test_file_for_user(utype)
     end
 
   end
-
 
   # Méthode principale de création du fichier par type d'user
   # @param {Symbol} user_type
@@ -39,63 +39,40 @@ module FeaTestModule
   #                 AS
   #
   def create_test_file_for_user user_type
+    __dg("-> create_test_file_for_user(user_type=#{user_type.inspect})",2)
     rspec_file_path = File.join(steps_by_users_folder, "#{user_type}_spec.rb")
     ref = File.open(rspec_file_path,'wb')
     ref.write(<<~RSPEC)
-=begin
+    #{preambule_test_file}
+    # === REQUIREMENTS ===
+    #{entete_test_files || ''}
 
-    CE FICHIER NE DOIT PAS ÊTRE TOUCHÉ, IL EST CONSTRUIT DE FAÇON
-    PROGRAMMATIQUE PAR UN SCRIPT (TEST_BY_STEP/build_and_run.rb)
+    #{exhaustive_method}
 
-=end
+    #{constantes_test_files}
 
-  # === REQUIREMENTS ===
-  #{entete_test_files || ''}
+    feature 'Visite du site testée (par #{human_user(user_type)})', visite: true do
 
-  class Array
-    # Suivant le mode EXHAUSTIF, retourne toute la liste
-    # ou seulement +nombre_defaut+ éléments choisis au hasard,
-    # 3 par défaut
-    # Ajouter l'options `--exhaustif` à la commande test_spole
-    # pour traiter tous les éléments
-    def exhaust default = 3
-      #{CLI.option(:exhaustif) ? 'self' : 'self.shuffle[0..(default - 1)]'}
-    end
-  end #/Array
+      def retour_accueil
+        say "\#{@pseudo} revient à l’accueil en cliquant sur le lien “Accueil” sous le logo"
+        within('section#header'){click_link 'accueil'}
+      end
+      def wait time
+        WAIT_COEFFICIANT || return
+        sleep WAIT_COEFFICIANT * time
+      end
 
-  # Pour ne pas le définir pour chaque test
-  if !defined?(DELIMITATION)
-    DELIMITATION      = "*\\n*\\n\#{'*'80}\\n*\\n*"
-    ONLINE            = #{(!!CLI.option(:online)).inspect}
-    OFFLINE           = !ONLINE
-    WAIT_COEFFICIANT  = #{CLI.option(:wait)}
-    DONT_SAY_ANYTHING = #{(CLI.option(:silent)||CLI.option(:quiet)) ? 'true' : 'false'}
-    DEBUG_LEVEL       = #{CLI.option(:'debug-level')}
-    EXHAUSTIF         = #{(!!CLI.option(:exhaustif)).inspect}
-  end
+      before(:all) do
 
-  feature 'Visite du site testée (par #{human_user(user_type)})', visite: true do
+        @url = site.configuration.send("url_\#{ENV['TEST_ONLINE'] == 'true' ? 'online' : 'offline'}".to_sym)
+        @url = "http://\#{@url}"
 
-    def retour_accueil
-      say "\#{@pseudo} revient à l’accueil en cliquant sur le lien “Accueil” sous le logo"
-      within('section#header'){click_link 'accueil'}
-    end
-    def wait time
-      WAIT_COEFFICIANT || return
-      sleep WAIT_COEFFICIANT * time
-    end
+        @from_step = ENV['RSPEC_FROM_STEP'].nil_if_empty ? ENV['RSPEC_FROM_STEP'].to_sym : :start
+        @to_step   = ENV['RSPEC_TO_STEP'].nil_if_empty   ? ENV['RSPEC_TO_STEP'].to_sym : :end
 
-    before(:all) do
+        puts "= @url = \#{@url}, @from_step = \#{@from_step.inspect}, @to_step = \#{@to_step.inspect}"
 
-      @url = site.configuration.send("url_\#{ENV['TEST_ONLINE'] == 'true' ? 'online' : 'offline'}".to_sym)
-      @url = "http://\#{@url}"
-
-      @from_step = ENV['RSPEC_FROM_STEP'].nil_if_empty ? ENV['RSPEC_FROM_STEP'].to_sym : :start
-      @to_step   = ENV['RSPEC_TO_STEP'].nil_if_empty   ? ENV['RSPEC_TO_STEP'].to_sym : :end
-
-      puts "= @url = \#{@url}, @from_step = \#{@from_step.inspect}, @to_step = \#{@to_step.inspect}"
-
-    end
+      end
 
     scenario '=> #{human_user(user_type).titleize} peut visiter les parties testées du site' do
 
@@ -206,6 +183,49 @@ module FeaTestModule
     RSPEC
   end
 
+  # --------------------------------------------------------------------------------
+  #
+  #    PORTIONS DU FICHIER TEST GÉNÉRAL POUR UN USER-TYPE
+  # 
+  # --------------------------------------------------------------------------------
+
+
+  def preambule_test_file
+    @preambule_test_file ||= <<~EOT
+    =begin
+    
+        CE FICHIER NE DOIT PAS ÊTRE TOUCHÉ, IL EST CONSTRUIT DE FAÇON
+        PROGRAMMATIQUE PAR UN SCRIPT (TEST_BY_STEP/build_and_run.rb)
+    
+    =end
+
+    EOT
+  end
+
+  def exhaustive_method
+    @exhaustive_method ||= <<~EOT
+    class Array
+      def exhaust default = 3
+        #{CLI.option(:exhaustif) ? 'self' : 'self.shuffle[0..(default - 1)]'}
+      end
+    end #/Array
+    EOT
+  end
+
+  def constantes_test_files
+   @constantes_test_files ||= <<~EOT
+   # Pour ne pas le définir pour chaque test
+   if !defined?(DELIMITATION)
+     DELIMITATION      = "*\\n*\\n\#{'*'80}\\n*\\n*"
+     ONLINE            = #{(!!CLI.option(:online)).inspect}
+     OFFLINE           = !ONLINE
+     WAIT_COEFFICIANT  = #{CLI.option(:wait)}
+     DONT_SAY_ANYTHING = #{(CLI.option(:silent)||CLI.option(:quiet)) ? 'true' : 'false'}
+     DEBUG_LEVEL       = #{CLI.option(:'debug-level')}
+     EXHAUSTIF         = #{(!!CLI.option(:exhaustif)).inspect}
+   end
+   EOT
+  end
   def test_file_footer
     @test_file_footer ||= <<~RSPEC
 
@@ -254,7 +274,8 @@ module FeaTestModule
 
   # Traite les inclusions dans le code +code+ et retourne le nouveau code
   def traite_inclusions_in fpath
-    puts "fpath = #{fpath}"
+    __dg("-> traite_inclusions_in(#{fpath.inspect})",3)
+    File.exist?(fpath) || (return "# [MISSING FILE: #{fpath}]")
     code = File.read(fpath)
     # On regarde si le fichier a des textes inclus
     if code.match(/^[ \t]*<-/)

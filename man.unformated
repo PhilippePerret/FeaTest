@@ -18,6 +18,23 @@ featest - Test par fonctionnalité et user
 
   Run tests in `path/to/file` folder, as they're defined with `options` (see below).
 
+.B featest check
+{path/to/file}
+[options]
+
+  Check les tests du site situé à {path/to/file}. Checker signifie que le programme
+  vérifie la correspondance entre la définition des "featest sheets" (feuilles définissant
+  les fonctionnalités) et les dossiers et fichiers.
+  - Chaque fonctionnalité doit avoir sa définition et sa "contre-définition" (can_not)
+  - Chaque fichier doit avoir sa ligne dans une featest sheet.
+  Les options pourront définir des formats de sortie.
+
+.B featest build
+{path/to/file}
+[options]
+
+  Construit les pages de test qui manquent.
+
 ."
 ." ============= DESCRIPTION =============
 ."
