@@ -4,7 +4,9 @@ module FeaTestModule
 
     attr_reader :path
     attr_reader :step
-    attr_reader :step_description
+
+    # Description de l'étape
+    attr_reader :description
 
     def initialize fpath
       @path = fpath

@@ -14,11 +14,8 @@ module FeaTestModule
     define_users
     require './spec/spec_helper'
     # Si un fichier init.rb existe, on le joue
-    init_file = File.join(featest_folder,'init.rb')
-    if File.exist?(init_file)
-      __dg("init.rb existe. On le joue",3)
-      require init_file
-    end
+    File.exist?(config_file_path) || raise("Le fichier config.rb doit absolument exister.")
+    require config_file_path
     __dg("<- prepare",1) 
   end
 

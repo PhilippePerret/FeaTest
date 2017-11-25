@@ -1,6 +1,12 @@
 # encoding: utf-8
 
 class String
+
+  def nil_if_empty
+    str = self.strip
+    str.empty? ? nil : str
+  end
+
   # Pour upcaser vraiment tous les caractères, même les accents et
   # les diacritiques
   FTEST_DATA_MIN_TO_MAJ = {

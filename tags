@@ -7,69 +7,99 @@
 Array	lib/module/test/build_test.rb	/^    class Array$/;"	c	class:FeaTestModule.exhaustive_method
 CLI	lib/required/cli.rb	/^class CLI$/;"	c
 FeaTest	lib/required/FeaTest/instance/inst.rb	/^class FeaTest$/;"	c
+FeaTestModule	lib/module/build/main.rb	/^module FeaTestModule$/;"	m
+FeaTestModule	lib/module/check/featest_sheet.rb	/^module FeaTestModule$/;"	m
+FeaTestModule	lib/module/check/main.rb	/^module FeaTestModule$/;"	m
+FeaTestModule	lib/module/check/utils.rb	/^module FeaTestModule$/;"	m
 FeaTestModule	lib/module/help/main.rb	/^module FeaTestModule$/;"	m
+FeaTestModule	lib/module/sheets/featest_sheets.rb	/^module FeaTestModule$/;"	m
+FeaTestModule	lib/module/sheets/instance/inst.rb	/^module FeaTestModule$/;"	m
+FeaTestModule	lib/module/sheets/instance/parse.rb	/^module FeaTestModule$/;"	m
+FeaTestModule	lib/module/sheets/instance/paths.rb	/^module FeaTestModule$/;"	m
 FeaTestModule	lib/module/test/build_test.rb	/^module FeaTestModule$/;"	m
 FeaTestModule	lib/module/test/data_and_states.rb	/^module FeaTestModule$/;"	m
-FeaTestModule	lib/module/test/featest_sheets.rb	/^module FeaTestModule$/;"	m
 FeaTestModule	lib/module/test/main.rb	/^module FeaTestModule$/;"	m
 FeaTestModule	lib/module/test/prepare.rb	/^module FeaTestModule$/;"	m
 FeaTestModule	lib/module/test/run_test.rb	/^module FeaTestModule$/;"	m
-FeaTestModule	lib/required/FeaTest/class/errors.rb	/^module FeaTestModule$/;"	m
+FeaTestModule	lib/module/validation/main.rb	/^module FeaTestModule$/;"	m
+FeaTestModule	lib/required/FeaTest/instance/inst.rb	/^module FeaTestModule ; end$/;"	m
 FeaTestModule	lib/required/FeaTest/instance/paths.rb	/^module FeaTestModule$/;"	m
 FeaTestModule	lib/required/FeaTest/instance/run.rb	/^module FeaTestModule$/;"	m
-FeaTestSheet	lib/module/test/featest_sheets.rb	/^  class FeaTestSheet$/;"	c	class:FeaTestModule
+FeaTestSheet	lib/module/check/featest_sheet.rb	/^  class FeaTestSheet$/;"	c	class:FeaTestModule
+FeaTestSheet	lib/module/sheets/featest_sheets.rb	/^  class FeaTestSheet$/;"	c	class:FeaTestModule
+FeaTestSheet	lib/module/sheets/instance/inst.rb	/^  class FeaTestSheet$/;"	c	class:FeaTestModule
+FeaTestSheet	lib/module/sheets/instance/parse.rb	/^  class FeaTestSheet$/;"	c	class:FeaTestModule
+FeaTestSheet	lib/module/sheets/instance/paths.rb	/^  class FeaTestSheet$/;"	c	class:FeaTestModule
 File	lib/required/extensions/File.rb	/^class File$/;"	c
 Help	lib/module/help/main.rb	/^  class Help$/;"	c	class:FeaTestModule
+NilClass	lib/required/extensions/Nil.rb	/^class NilClass$/;"	c
 String	lib/required/extensions/String.rb	/^class String$/;"	c
 __dg	lib/required/divers/messages.rb	/^def __dg msg, dbg_level = 0$/;"	f
-analyze_sheets	lib/module/test/featest_sheets.rb	/^      def analyze_sheets(folder)$/;"	f	class:FeaTestModule.FeaTestSheet
+add_aide_required	lib/module/check/main.rb	/^  def add_aide_required kaide$/;"	f	class:FeaTestModule
+analyze_sheets	lib/module/sheets/featest_sheets.rb	/^      def analyze_sheets(folder)$/;"	f	class:FeaTestModule.FeaTestSheet
 build_and_run_tests	lib/module/test/main.rb	/^  def build_and_run_tests$/;"	f	class:FeaTestModule
 build_test	lib/module/test/build_test.rb	/^  def build_test$/;"	f	class:FeaTestModule
+check	lib/module/check/featest_sheet.rb	/^    def check options = Hash.new$/;"	f	class:FeaTestModule.FeaTestSheet
+check_and_display	lib/module/check/main.rb	/^  def check_and_display$/;"	f	class:FeaTestModule
+check_etapes	lib/module/check/main.rb	/^  def check_etapes$/;"	f	class:FeaTestModule
+check_utype	lib/module/check/featest_sheet.rb	/^    def check_utype utype, dtype$/;"	f	class:FeaTestModule.FeaTestSheet
+config_file_path	lib/required/FeaTest/instance/paths.rb	/^  def config_file_path$/;"	f	class:FeaTestModule
+config_file_valide?	lib/module/check/main.rb	/^  def config_file_valide?$/;"	f	class:FeaTestModule
 constantes_test_files	lib/module/test/build_test.rb	/^  def constantes_test_files$/;"	f	class:FeaTestModule
 create_test_file_for_user	lib/module/test/build_test.rb	/^  def create_test_file_for_user user_type$/;"	f	class:FeaTestModule
 define_steps	lib/module/test/prepare.rb	/^  def define_steps$/;"	f	class:FeaTestModule
 define_users	lib/module/test/prepare.rb	/^  def define_users$/;"	f	class:FeaTestModule
 display	lib/module/help/main.rb	/^      def display$/;"	f	class:FeaTestModule.Help
+entete_check_and_display	lib/module/check/main.rb	/^  def entete_check_and_display$/;"	f	class:FeaTestModule
 entete_feedback	lib/module/test/run_test.rb	/^  def entete_feedback$/;"	f	class:FeaTestModule
 error	lib/required/divers/messages.rb	/^def error msg$/;"	f
 exhaust	lib/module/test/build_test.rb	/^      def exhaust default = 3$/;"	f	class:FeaTestModule.exhaustive_method.Array
 exhaustive_method	lib/module/test/build_test.rb	/^  def exhaustive_method$/;"	f	class:FeaTestModule
+existOrError	lib/module/check/featest_sheet.rb	/^    def existOrError fpath, type = '    '$/;"	f	class:FeaTestModule.FeaTestSheet
+existOrError	lib/module/check/utils.rb	/^  def existOrError fpath, type = '    '$/;"	f	class:FeaTestModule
 existsOrRaise	lib/required/extensions/File.rb	/^    def existsOrRaise fpath, err_msg$/;"	f	class:File
 fatale_error	lib/required/divers/messages.rb	/^def fatale_error msg$/;"	f
 featest_folder	lib/required/FeaTest/instance/paths.rb	/^  def featest_folder$/;"	f	class:FeaTestModule
-featest_valide?	lib/module/test/main.rb	/^  def featest_valide?$/;"	f	class:FeaTestModule
+featest_valide?	lib/module/validation/main.rb	/^  def featest_valide? options = Hash.new$/;"	f	class:FeaTestModule
 full_downcase	lib/required/extensions/String.rb	/^  def full_downcase$/;"	f	class:String
 full_upcase	lib/required/extensions/String.rb	/^  def full_upcase$/;"	f	class:String
 get_prop_value	lib/required/cli.rb	/^    def get_prop_value paire$/;"	f	class:CLI
 help	lib/required/FeaTest/instance/run.rb	/^  def help$/;"	f	class:FeaTestModule
 human_user	lib/module/test/data_and_states.rb	/^  def human_user utype$/;"	f	class:FeaTestModule
-initialize	lib/module/test/featest_sheets.rb	/^    def initialize fpath$/;"	f
+initialize	lib/module/sheets/instance/inst.rb	/^    def initialize fpath$/;"	f	class:FeaTestModule.FeaTestSheet
 initialize	lib/required/FeaTest/instance/inst.rb	/^  def initialize$/;"	f
 main_folder	lib/required/FeaTest/instance/paths.rb	/^  def main_folder$/;"	f	class:FeaTestModule
+main_steps_folder	lib/module/sheets/instance/paths.rb	/^    def main_steps_folder$/;"	f	class:FeaTestModule.FeaTestSheet
+nil_if_empty	lib/required/extensions/Nil.rb	/^  def nil_if_empty$/;"	f	class:NilClass
+nil_if_empty	lib/required/extensions/String.rb	/^  def nil_if_empty$/;"	f	class:String
 notice	lib/required/divers/messages.rb	/^def notice msg$/;"	f
 offline?	lib/module/test/data_and_states.rb	/^  def offline?$/;"	f	class:FeaTestModule
+offline?	lib/required/FeaTest/instance/inst.rb	/^  def offline?$/;"	f
 online?	lib/module/test/data_and_states.rb	/^  def online? ; !offline? end$/;"	f	class:FeaTestModule
+online?	lib/required/FeaTest/instance/inst.rb	/^  def online?$/;"	f
 option	lib/required/cli.rb	/^    def option key$/;"	f	class:CLI
 param	lib/required/cli.rb	/^    def param key$/;"	f	class:CLI
-parse	lib/module/test/featest_sheets.rb	/^    def parse$/;"	f
+parse	lib/module/sheets/instance/parse.rb	/^    def parse$/;"	f	class:FeaTestModule.FeaTestSheet
 parse	lib/required/cli.rb	/^    def parse$/;"	f	class:CLI
 preambule_test_file	lib/module/test/build_test.rb	/^  def preambule_test_file$/;"	f	class:FeaTestModule
 prepare	lib/module/test/prepare.rb	/^  def prepare$/;"	f	class:FeaTestModule
 prepare_build_and_run_test	lib/required/FeaTest/instance/run.rb	/^  def prepare_build_and_run_test$/;"	f	class:FeaTestModule
-real_code_for_section	lib/module/test/build_test.rb	/^  def real_code_for_section section, utype$/;"	f
 real_file_for_section	lib/module/test/build_test.rb	/^  def real_file_for_section section, utype$/;"	f
 rectif_options	lib/required/cli.rb	/^    def rectif_options$/;"	f	class:CLI
+relpath	lib/module/check/utils.rb	/^  def relpath fpath$/;"	f	class:FeaTestModule
 require_folder	lib/required/divers/handy_methods.rb	/^def require_folder fpath$/;"	f
 require_module	lib/required/divers/handy_methods.rb	/^def require_module mname$/;"	f
 retour_accueil	lib/module/test/build_test.rb	/^      def retour_accueil$/;"	f	class:FeaTestModule.create_test_file_for_user
 run	lib/required/FeaTest/instance/run.rb	/^  def run$/;"	f	class:FeaTestModule
 run_test	lib/module/test/run_test.rb	/^  def run_test$/;"	f	class:FeaTestModule
 search_for_included_file	lib/module/test/build_test.rb	/^  def search_for_included_file fname, fpath$/;"	f
-section_template	lib/module/test/build_test.rb	/^  def section_template$/;"	f	class:FeaTestModule
 sheets_folder	lib/required/FeaTest/instance/paths.rb	/^  def sheets_folder$/;"	f	class:FeaTestModule
+step_template	lib/module/test/build_test.rb	/^  def step_template$/;"	f	class:FeaTestModule
 steps_by_users_folder	lib/required/FeaTest/instance/paths.rb	/^  def steps_by_users_folder$/;"	f	class:FeaTestModule
+steps_folder	lib/module/sheets/instance/paths.rb	/^    def steps_folder as_user = nil$/;"	f	class:FeaTestModule.FeaTestSheet
 steps_folder	lib/required/FeaTest/instance/paths.rb	/^  def steps_folder$/;"	f	class:FeaTestModule
 steps_valides_or_raise?	lib/module/test/prepare.rb	/^  def steps_valides_or_raise?$/;"	f	class:FeaTestModule
+test_code_for_step_by_user	lib/module/test/build_test.rb	/^  def test_code_for_step_by_user step, utype$/;"	f	class:FeaTestModule
 test_file_footer	lib/module/test/build_test.rb	/^  def test_file_footer$/;"	f	class:FeaTestModule
 titleize	lib/required/extensions/String.rb	/^  def titleize$/;"	f	class:String
 traite_comments_in	lib/module/test/build_test.rb	/^  def traite_comments_in code$/;"	f

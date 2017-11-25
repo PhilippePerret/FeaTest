@@ -64,8 +64,7 @@ module FeaTestModule
 
       before(:all) do
 
-        @url = site.configuration.send("url_\#{ENV['TEST_ONLINE'] == 'true' ? 'online' : 'offline'}".to_sym)
-        @url = "http://\#{@url}"
+        @url = 'http://#{online? ? url_online : url_offline}'
 
         @from_step = ENV['RSPEC_FROM_STEP'].nil_if_empty ? ENV['RSPEC_FROM_STEP'].to_sym : :start
         @to_step   = ENV['RSPEC_TO_STEP'].nil_if_empty   ? ENV['RSPEC_TO_STEP'].to_sym : :end
@@ -80,7 +79,7 @@ module FeaTestModule
 
       puts DELIMITATION
 
-      #{data_user(user_type)} #-- Définition de huser --#
+      #{data_user(user_type)} #-- Données du user --#
 
       process_error_count = 0
 
@@ -104,7 +103,7 @@ module FeaTestModule
       # Tous les visiteurs, sauf les simples visiteurs, doivent s'identifier
       # en arrivant sur le site (pour visiter réellement les parties avec leur
       # statut)
-      #{user_type != :visitor ? real_code_for_section(:signin, user_type) : ''}
+      #{user_type != :visitor ? test_code_for_step_by_user(:signin, user_type) : ''}
 
       # Si on doit commencer les tests depuis le début
       if @from_step == :start
@@ -134,25 +133,39 @@ module FeaTestModule
     #=== BOUCLE SUR LES ÉTAPES À TESTER ===
     #
     #
-    @tested_steps.each do |section|
-      codetest = real_code_for_section(section, user_type)
+    @tested_steps.each do |step|
+
+      # step est l'étape sous forme de symbol (:home, :signin, etc.)
+      # Dans la méthode `test_code_for_step_by_user`, elle sera transformée
+      # en instance {FeaTest}.
+      codetest = test_code_for_step_by_user(step, user_type)
+
+      # Quelque fois, il n'existe pas de test pour le type d'user courant. Avant,
+      # on utilisait le type `common` mais c'est inutile maintenant. Donc, dans 
+      # ce cas, on passe simplement à la suite
+      codetest || begin
+        __dg("Pas d'étape #{step.inspect} pour le type #{user_type.inspect}. On passe à la suite.")
+        next
+      end
+
       ref.write(
-        section_template
-        .gsub(/__SECTION__/, section.to_s)
+        step_template
+        .gsub(/__STEP_NAME__/, step.to_s)
         .sub(/___FILE_CONTENT___/, codetest)
       )
     end
 
     # BOUT DU FICHIER
+    ref.write test_file_footer
 
     ref.close
 
   end
   #/ Fin de méthode créant le fichier
-  def section_template
-    @section_template ||= <<~RSPEC
-    if @from_step == :__SECTION__
-      notice "*** Démarrage du test à partir de __SECTION__ ***"
+  def step_template
+    @step_template ||= <<~RSPEC
+    if @from_step == :__STEP_NAME__
+      notice "*** Démarrage du test à partir de __STEP_NAME__ ***"
       @test_running = true
     end
 
@@ -163,7 +176,7 @@ module FeaTestModule
 
       rescue Exception => e
         if !#{CLI.option(:'fail-fast').inspect}
-          failure("Failure dans l'étape :__SECTION__ : \#{e.message}")
+          failure("Failure dans l'étape :__STEP_NAME__ : \#{e.message}")
           if #{CLI.option(:debug).inspect}
             failure(e.backtrace.join("\\n"))
           end
@@ -175,8 +188,8 @@ module FeaTestModule
 
     end #/test_running
 
-    if @to_step == :__SECTION__
-      notice "=== Arrêt des tests à l'étape __SECTION__ ==="
+    if @to_step == :__STEP_NAME__
+      notice "=== Arrêt des tests à l'étape __STEP_NAME__ ==="
       @test_running = false
     end
 
@@ -189,6 +202,53 @@ module FeaTestModule
   # 
   # --------------------------------------------------------------------------------
 
+
+  # Retourne les codes des tests pour l'étape +step+ pour l'user de type +utype+ni
+  def test_code_for_step_by_user step, utype
+    __dg("-> test_code_for_step_by_user(step=#{step.inspect}, utype=#{utype.inspect})",2)
+    istep = FeaTestSheet::ETAPES[step]
+    code = FeaTestSheet::ETAPES[step].full_test_code_for(utype)
+    code || (return nil)
+
+
+    dutype = istep.per_user_types[utype]
+    dutype || (return nil) # pas d'étape pour ce type d'user
+    puts "dutype: #{dutype.inspect}"
+
+    # On traite déjà ses features
+    dutype[:features].each do |feat|
+      puts "Traitement de sa feature #{feat[:affixe]}"
+    end
+    if dutype[:only_features]
+      # On traite ses features uniques (if any)
+      dutype[:only_features].each do |feat|
+        puts "Traitement de sa feature #{feat[:affixe]}"
+      end
+    end
+    if dutype[:features_out]
+      # On traite ses "features out" (qui ne correspondent pas à des
+      # features d'autres type d'user)
+      dutype[:features_out].each do |feat|
+       puts "Traitement de la feature OUT #{feat[:affixe]}"
+      end
+    end
+    if dutype[:can_act_as_previous]
+      # Donc on doit prendre tous les features du précédent, du précédent du
+      # précédent etc.
+      puts "Il doit agir comme le previous #{dutype[:previous_user]}"
+    end
+    if dutype[:can_not_act_as_next]
+      # Donc on doit vérifier qu'il ne peut pas agir comme le suivant, et le
+      # suivant du suivant, etc.
+      puts "Il ne doit pas agir comme le suivi #{dutype[:next_user]}"
+    end
+
+    fpath = real_file_for_section(step, utype)
+
+    codetest = traite_inclusions_in( fpath )
+    # On supprime tous les commentaires et blancs inutiles
+    codetest = traite_comments_in(codetest)
+  end
 
   def preambule_test_file
     @preambule_test_file ||= <<~EOT
@@ -293,15 +353,6 @@ module FeaTestModule
       .gsub(/# (.*?)\n/,"\n")
       .gsub(/#\n/,"\n")
       .gsub(/\n\n\n+/,"\n\n")
-  end
-
-
-  # Retourne le code épuré pour la section +section+ de l'utilisateur défini
-  def real_code_for_section section, utype
-    fpath = real_file_for_section(section, utype)
-    codetest = traite_inclusions_in( fpath )
-    # On supprime tous les commentaires et blancs inutiles
-    codetest = traite_comments_in(codetest)
   end
 
   def search_for_included_file fname, fpath

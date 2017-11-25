@@ -8,7 +8,11 @@
 module FeaTestModule
   class FeaTestSheet
 
+    # Toutes les "steps", les étapes ou les sections du site ou de l'application
     ETAPES      = Hash.new
+
+    # Contiendra tous les users types récoltés dans chaque featest sheet, contrairement
+    # à la propriété per_user_types qui correspond à une sheet en particulier.
     USER_TYPES  = Hash.new
 
     class << self

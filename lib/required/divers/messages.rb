@@ -9,7 +9,7 @@
 # Les valeurs des variables se mettent au niveau 5
 def __dg msg, dbg_level = 0
   @debug_level ||= CLI.option(:'debug-level')
-  @debug_level > dbg_level || return
+  @debug_level >= dbg_level || return
   puts "--- #{msg}"
 end
 alias :__db :__dg

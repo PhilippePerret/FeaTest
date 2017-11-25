@@ -29,6 +29,7 @@ module FeaTestModule
 
   # Le visiteur qui visite, en version humaine, pour les textes
   def human_user utype
+    __dg("-> human_user(utype=#{utype.inspect})",2)
     FeaTestSheet::USER_TYPES[utype][:hname] || 'le visiteur quelconque'
   end
 

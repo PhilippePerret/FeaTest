@@ -78,7 +78,10 @@ FeaTest reduces the effort to keep requirements specifications, tests and docume
         * can modify a post of their                                        --- modify_their_posts
         * can suscribe to a subject                                         --- suscribe_subject 
         * can unsuscribe to a subject                                       --- mark_read_not_read_on_page
-        [etc]
+        (*) can unsuscribe from the site                                    --- unsuscribe_site
+    :    ^
+    :    |____ A feature only for this user type.
+    :   [etc]
     
         : A feature group title.                                              
         : Just for clarity.                               

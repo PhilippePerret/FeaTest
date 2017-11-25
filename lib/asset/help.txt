@@ -2,7 +2,96 @@
 
 
 =====================================================================
-  AIDE SCRIPT `_visite_testee_run_.rb`
+
+  
+  MANUEL DE FEATEST (FDD)
+
+  CONFIGURATION GÉNÉRALE
+  ======================
+
+  Pour pouvoir fonctionner, les featests ont besoin de cette hiérarchie
+
+    app-folder/spec/features/featest/sheets     -- dossier des définitions des
+                                                   fonctionnalités.
+                                     steps      -- codes des tests proprement dits.
+                                     config.rb  -- définitions générales obligatoires
+
+  CONFIG.RB FILE
+  ============
+
+  Le fichier `config.rb`, à la racine du dossier featest, doit étendre le module
+  `FeaTestModule` pour définir des valeurs obligatoires, à savoir :
+
+    - les URLS online et offline              url_online, url_offline
+    - la liste des étapes, dans l'ordre       steps_sequence
+    - les données d'identification pour       data_user(<user type>)
+      tous les types d'users définis, avec
+      le bon niveau. C'est une méthode qui
+      doit retourner le code à écrire pour
+      obtenir le Hash des données de l'user en fonction de son type.
+
+  Ce fichier doit donc contenir le code :
+
+      module FeaTestModule
+        def url_online
+          @url_online ||= ...
+        end
+        def url_offline
+          @url_offline ||= ...
+        end
+        def steps_sequence
+          @steps_sequence ||= [
+            ...
+          ]
+        end
+        def data_user utype
+          case utype
+          when ... then <<~EOC
+          huser = "{pseudo: ..., id:..., password:..., mail:...}"
+          when ...
+          end
+        end
+      end #/module
+
+  PREMIÈRE FEUILLE DE TEST .FTEST
+  ===============================
+
+  Feuilles obligatoires :
+
+    - home.ftest        Définition de la page d'accueil
+    - signin.ftest      Mode d'identification
+
+  La première feuille de test à créer, obligatoire, est celle qui définit l'accueil
+  du site, donc ce qu'on s'attend à trouver, par utilisateur, sur la page d'accueil.
+  Il peut s'agir seulement du logo.
+
+  Cette feuille se définit dans :
+
+    <app>/spec/features/featest/sheets/home.ftest
+
+  Elle est au format normal des featest-sheets (feuille featest). Cf. 
+  FORMAT DES FICHIERS .fest plus bas.
+
+  La feuille signin.ftest se définit elle dans :
+
+    <app>/spec/features/featest/sheets/signin.ftest
+  
+  On peut ensuite jouer la commande :
+
+    cd <app folder>
+    featest build
+
+  … pour construire les fichiers qui vont permettre de définir les codes
+  des tests.
+
+  On implémente dans ces fichiers les codes des tests.
+
+  On peut ensuite jouer la commande :
+  
+      > featest [options]
+
+  … pour lancer les premiers tests.
+
 
   PROCÉDURE POUR CRÉER DES FEAT TESTS
   ===================================

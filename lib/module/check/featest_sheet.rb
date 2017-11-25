@@ -2,15 +2,20 @@
 module FeaTestModule
   class FeaTestSheet
 
-    def relpath fpath
-      fpath.sub(/^#{FeaTest.current.main_folder}\//,'.')
-    end
+    attr_reader :options
+
     def existOrError fpath, type = '    '
-      rpath = (relpath fpath).ljust(100)
+      rpath = (FeaTest.current.relpath fpath).ljust(100)
       if File.exist?(fpath)
         notice "- #{rpath} #{type} OK"
       else
-        error("# #{rpath} #{type} KO")
+        if options[:build]
+          # TODO
+          "= Fichier #{rpath} construit"
+        else
+          error("# #{rpath} #{type} KO")
+          FeaTest.current.add_aide_required(:fichier_code_test)
+        end
       end
     end
 
@@ -19,25 +24,42 @@ module FeaTestModule
     # TODO: Vérifier le contraire, c'est-à-dire que tous les fichiers
     # qui se trouvent dans les dossiers correspondent bien à des features 
     # existantes/définies.
-    def check
-      existOrError(steps_folder, 'file')
-      USER_TYPES.each do |utype, dtype|
-        existOrError(utype_folder = steps_folder(utype), 'file')
-        puts "dtype: #{dtype.inspect}"
-        dtype[:features].each do |feature|
-          fpath = File.join(utype_folder, "can_#{feature[:affixe]}.rb")
-          existOrError(fpath, 'FEAT') 
-        end
+    def check options = Hash.new
 
-        # Contre-fonctionnalités
-        if dtype[:can_not_act_as_next]
-          USER_TYPES[dtype[:next_user]][:features].each do |feature|
-            fpath = File.join(utype_folder, "CANT_#{feature[:affixe]}.rb")
-            existOrError(fpath, 'FEAT') 
-          end
-        end
+      # Les options de check. Définit par exemple qu'il faut construire
+      # ce qui doit l'être.
+      @options = options
+
+      existOrError(steps_folder, 'file')
+      per_user_types.each do |utype,dtype|
+        check_utype(utype, dtype)
       end
 
     end
+    #/check
+
+    #
+    def check_utype utype, dtype
+      existOrError(utype_folder = steps_folder(utype), 'file')
+      dtype[:features].each do |feature|
+        if feature[:affixe]
+          fpath = File.join(utype_folder, "can_#{feature[:affixe]}.rb")
+          existOrError(fpath, 'FEAT') 
+        else
+          error("# La fonctionnalité `#{feature[:hname]}` ne définit pas son affixe (*)")
+          FeaTest.current.add_aide_required(:definition_affixe)
+        end
+      end
+
+      # Contre-fonctionnalités
+      if dtype[:can_not_act_as_next]
+       per_user_types[dtype[:next_user]][:features].each do |feature|
+          fpath = File.join(utype_folder, "CANT_#{feature[:affixe]}.rb")
+          existOrError(fpath, 'FEAT') 
+        end
+      end
+    end
+    #/check_utype
+
   end #/FeaTestSheet
 end #/FeaTestModule
