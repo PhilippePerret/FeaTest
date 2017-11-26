@@ -67,7 +67,7 @@ module FeaTestModule
       # mais non connecté
       def visit_home_page
         visit "\#{@url}" 
-        notice "\#{@pseudo} arrive sur le site"
+        notice "\#{pseudo} arrive sur le site"
       end
 
       # Pour comptabiliser le nombre d'erreur
@@ -75,7 +75,7 @@ module FeaTestModule
         @process_error_count ||= 0
         @process_error_count += 1
       end
-      def process_error_count ; @process_error_count end
+      def process_error_count ; @process_error_count || 0 end
 
       before(:all) do
 
@@ -120,7 +120,8 @@ module FeaTestModule
     # L'idée est que `@tested_steps` (pour "étapes testées") ne contienne que les
     # étapes nécessaires, pour simplifier le code (et pouvoir isoler plus
     # facilement les fragments qui échouent)
-    @tested_steps ||= FeaTest.current.steps_sequence
+    #@tested_steps ||= FeaTest.current.steps_sequence
+    @tested_steps ||= FeaTest.current.steps
     
     # On ne prend que les étapes qu'il faut tester
     puts "@tested_steps: #{@tested_steps.inspect}"

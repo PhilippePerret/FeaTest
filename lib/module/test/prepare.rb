@@ -10,12 +10,12 @@ module FeaTestModule
     __dg("-> prepare",1)
     require_module 'sheets'
     FeaTestSheet.analyze_sheets(sheets_folder)
-    define_steps
-    define_users
     require './spec/spec_helper'
-    # Si un fichier init.rb existe, on le joue
+    # Si un fichier config.rb existe, on le joue
     File.exist?(config_file_path) || raise("Le fichier config.rb doit absolument exister.")
     require config_file_path
+    define_steps
+    define_users
     __dg("<- prepare",1) 
   end
 
@@ -37,14 +37,14 @@ module FeaTestModule
     __dg("   (AS = #{AS.inspect})")
   end
   def define_steps
-    etapes = FeaTestSheet::ETAPES
+    etapes = steps_sequence.select{|step| FeaTestSheet::ETAPES.key?(step)}
     @steps =
       case CLI.option(:step)
       when NilClass
         case CLI.option(:steps)
         when 'all', NilClass
           # Toutes les étapes
-          etapes.keys
+          steps_sequence
         when /^(.*)-(.*)$/ 
           # Un rang d'étapes
           fr_step = $1.to_sym
