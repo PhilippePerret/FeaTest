@@ -12,6 +12,11 @@ module FeaTestModule
     when 'build'
       CLI::PARAMS_ORDER[:file_path] = 1
       require_module 'build'
+      build_all_files
+    when 'rename'
+      CLI::PARAMS_ORDER[:file_path] = 3
+      require_module 'rename'
+      rename CLI.param(2), CLI.param(3), CLI.param(4)
     else
       prepare_build_and_run_test
     end

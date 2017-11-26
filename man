@@ -12,6 +12,24 @@ featest - Test par fonctionnalit\['e] et user
 Run tests in `path/to/file` folder, as they're defined with `options` (see below).
 .RE
 .PP
+.B featest check {path/to/file} [options]
+.PP
+.RS
+Check les tests du site situ\['e] \[`a] {path/to/file}. Checker signifie que le programme v\['e]rifie la correspondance entre la d\['e]finition des "featest sheets" (feuilles d\['e]finissant les fonctionnalit\['e]s) et les dossiers et fichiers. - Chaque fonctionnalit\['e] doit avoir sa d\['e]finition et sa "contre-d\['e]finition" (can_not) - Chaque fichier doit avoir sa ligne dans une featest sheet. Les options pourront d\['e]finir des formats de sortie.
+.RE
+.PP
+.B featest build {path/to/file} [options]
+.PP
+.RS
+Construit les pages de test qui manquent.
+.RE
+.PP
+.B featest rename current_name new_name[ path/to/ftest_sheet ]
+.PP
+.RS
+Rename the `current_name` feature with `new_name` in : 1. the `can_` file, the `CANT_` file (if exists) and the `ftest_sheet.ftest` file.
+.RE
+.PP
 .SH DESCRIPTION
 .PP
 .RS
@@ -78,6 +96,30 @@ To test ONLINE (test/production)
 .PP
 .RS
 Display debug messages and error backtraces.
+.RE
+.PP
+.B --exhaustif
+.PP
+.RS
+Traite les tests de fa\[,c]on exaustive, c'est-\[`a]-dire que les listes ne sont pas raccourcies.
+.RE
+.PP
+.B --fast
+.PP
+.RS
+Do not pause durint the test. In normal mode, test pauses to let programer takes a look at the pages, the forms, the messages, and so on. In fast mode, no pause at all.
+.RE
+.PP
+.B --wait=COEFFICIENT
+.PP
+.RS
+You can slow down or accelerate the pauses during the tests with this option. 1 is the default value. A value between 0 and 1 accelerates the test, a value greater than 1 slows down the test, letting the programer taking a look at the interface.
+.RE
+.PP
+.B --[no-fail-fast
+.PP
+.RS
+As of RSpec, with this option on, tests stop at first error.
 .RE
 .PP
 .SH EXAMPLES

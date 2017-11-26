@@ -35,6 +35,11 @@ featest - Test par fonctionnalité et user
 
   Construit les pages de test qui manquent.
 
+.B featest rename current_name new_name[ path/to/ftest_sheet ]
+
+  Rename the `current_name` feature with `new_name` in :
+  1. the `can_` file, the `CANT_` file (if exists) and the `ftest_sheet.ftest` file.
+
 ."
 ." ============= DESCRIPTION =============
 ."

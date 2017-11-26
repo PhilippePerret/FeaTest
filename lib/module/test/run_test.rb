@@ -36,15 +36,13 @@ module FeaTestModule
   end
 
   def entete_feedback
-    
     <<~TXT
 
-    ========== TEST LANCÉ EN #{online? ? 'ONLINE' : 'OFFLINE'} ============
-    = Ce test est construit à partir des bouts de code se trouvant dans
-    = le dossier TEST_BY_STEP/_STEPS_FOLDER
-    =
-    = Test effectué à  : #{Time.now}
-    = Users types      : #{FeaTestSheet::AS.pretty_join}
+
+
+    ========== FEATEST LANCÉ EN #{online? ? 'ONLINE' : 'OFFLINE'} ============
+    = Date et temps    : #{Time.now.strftime('%d %m %Y à %H:%M')}
+    = Users types      : #{FeaTestSheet::USER_TYPES.keys.pretty_join}
     = Ordre            : #{CLI.option(:random) ? 'aléatoire' : 'normal'}
     = Ordre des étapes : #{@tested_steps.pretty_join}
     = Coefficiant wait : #{CLI.option(:wait)}#{CLI.option(:wait) == 0 ? ' (fast)' : ''}

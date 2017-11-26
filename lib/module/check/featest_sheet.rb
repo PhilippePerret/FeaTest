@@ -4,17 +4,29 @@ module FeaTestModule
 
     attr_reader :options
 
-    def existOrError fpath, type = '    '
+    def existOrError fpath, type = '    ', human_feat
       rpath = (FeaTest.current.relpath fpath).ljust(100)
       if File.exist?(fpath)
         notice "- #{rpath} #{type} OK"
       else
-        if options[:build]
+        if options[:build] && type == 'FEAT'
           # TODO
+          `mkdir -p "#{File.dirname(fpath)}"`
+          File.open(fpath,'wb') do |f| 
+          f.write <<~EOT
+          say "#{human_feat}"                      
+
+          # DÉFINIR ICI LE CODE DU TEST
+          
+          success "#{human_feat}"
+          EOT
+          end
           "= Fichier #{rpath} construit"
         else
           error("# #{rpath} #{type} KO")
-          FeaTest.current.add_aide_required(:fichier_code_test)
+          unless options[:build]
+            FeaTest.current.add_aide_required(:fichier_code_test)
+          end
         end
       end
     end
@@ -44,7 +56,7 @@ module FeaTestModule
       dtype[:features].each do |feature|
         if feature[:affixe]
           fpath = File.join(utype_folder, "can_#{feature[:affixe]}.rb")
-          existOrError(fpath, 'FEAT') 
+          existOrError(fpath, 'FEAT', "\#{pseudo} (#{utype.inspect}) #{feature[:hname]}") 
         else
           error("# La fonctionnalité `#{feature[:hname]}` ne définit pas son affixe (*)")
           FeaTest.current.add_aide_required(:definition_affixe)
@@ -55,7 +67,7 @@ module FeaTestModule
       if dtype[:can_not_act_as_next]
        per_user_types[dtype[:next_user]][:features].each do |feature|
           fpath = File.join(utype_folder, "CANT_#{feature[:affixe]}.rb")
-          existOrError(fpath, 'FEAT') 
+          existOrError(fpath, 'FEAT', "\#{pseudo} (#{utype.inspect}) ne peut pas : #{feature[:hname]}") 
         end
       end
     end

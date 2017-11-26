@@ -12,7 +12,7 @@ module FeaTestModule
     Dir.chdir(main_folder) do
       prepare
       build_test
-      #run_test
+      run_test
     end
   end
 

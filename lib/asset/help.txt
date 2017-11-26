@@ -53,7 +53,7 @@
         end
       end #/module
 
-  PREMIÈRE FEUILLE DE TEST .FTEST
+  PREMIÈRES FEUILLES DE TEST .FTEST
   ===============================
 
   Feuilles obligatoires :
@@ -67,19 +67,19 @@
 
   Cette feuille se définit dans :
 
-    <app>/spec/features/featest/sheets/home.ftest
+      <app>/spec/features/featest/sheets/home.ftest
 
   Elle est au format normal des featest-sheets (feuille featest). Cf. 
   FORMAT DES FICHIERS .fest plus bas.
 
   La feuille signin.ftest se définit elle dans :
 
-    <app>/spec/features/featest/sheets/signin.ftest
+      <app>/spec/features/featest/sheets/signin.ftest
   
   On peut ensuite jouer la commande :
 
-    cd <app folder>
-    featest build
+      cd <app folder>
+      featest build
 
   … pour construire les fichiers qui vont permettre de définir les codes
   des tests.
@@ -152,22 +152,82 @@
   FORMAT DES FICHIERS .ftest
   ==========================
 
+  TODO
+
+  CONSTRUIRE LES TESTS
+  ====================
+
+  Après avoir défini les fonctionnalités dans les fichiers `.ftest` et avoir construit
+  les fichiers correspondants avec la  commande `featest  build`, on peut s'atteler  à 
+  définir les tests proprement dits.
+
+    Forcer un nouveau scénario
+    --------------------------
+
+      Parfois, il est utile de repartir d'un nouveau scénario pour repartir d'un uti-
+      listateur tout à fait vierge, sans sessions, etc.
+      
+      Pour ce faire, il suffit d'utiliser la balise `NEW_SCENARIO` à l'endroit où doit
+      commencer le nouveau scénario. Toutes les données utiles seront également ins-
+      crites à cet endroit.
+
+    Méthodes pratiques
+    ------------------
+
+      En plus des méthodes de support définies pour le site, on peut trouver certaines
+      méthodes utiles directement implémentées. En voici la liste complète :
+
+      visit_home_page
+
+          Pour faire que l'user courant revisite le site dans une nouvelle session.
+          Permet de repartir "à zéro", avec un visiteur sans session, donc non 
+          identifié, etc.
+
+
+  RENOMMER UNE FONCTIONNALITÉ/FEATURE
+  ===================================
+
+  Il arrive fréquemment qu'on veuille renommer une fonctionnalité. Cela consiste à trois
+  opération distinctes :
+  - renommer le fichier `can_`
+  - renommer le fichier `CANT_`
+  - modifier le fichier `.ftest` qui la contient.
+
+  Plutôt que de prendre le risque de placer un mauvais nom, on peut utiliser la commande :
+
+      featest rename ...
+
+  … qui permet d'exécuter les trois opérations d'un coup et sans erreur.
+
+  Cette commande prend trois arguments, le nom (sans `can`) de la fonctionnalité, le
+  nouveau nom à lui attribuer et, exceptionnellement, s'il peut y avoir ambiguïté, le
+  path relatif du dossier de cette fonctionnalité dans le dossier `./spec/features/festest`
+
+  Par exemple :
+
+      featest rename ma_fonctionnalite mon_nouveau_nom home
+
+  La commande ci-dessous remplacera le nombre `ma_fonctionnalite` par `mon_nouveau_nom`
+  dans les deux fichiers can et CANT (if any) ainsi que dans le fichier `home.test` qui
+  la contient.
+
+  Noter que la commande est interactive, donc on peut simplement taper :
+
+      > featest rename
+
+  … et l'application nous accompagne dans la suite.
+
+  ANCIEN MANUEL
+  =============
+
+  TODO Reporter les options ci-dessous dans le manuel.
 
   ALIAS BASH  :
-                                  (alias défini dans ~/.bash_profile)
 
-      $> featest [ --online]
               [ --from=<etape>]
               [ --to=<etape>]
-              [ --step=<etape]
-              [ --as=<user>]
-              [ --exhaustif]
-              [ --grade=<grade de 1 à 9>]
               [ --wait=<coefficiant attente>]
               [ --quiet/--silent]
-              [ --debug]
-              [ --debug-level=<1 à 9>]
-              [ --random]
 
 
       Pour lancer la version intégrale et complète des tests :
@@ -177,11 +237,6 @@
         (attention : ça peut prendre la nuit, car ça teste le site de façon
          exhaustive, avec chacun des utilisateurs possibles l'un après l'autre)
 
-    --online
-
-      Si l'option `--online` est choisie, le test se fait en online. Noter que
-      certaines opérations, comme le dépôt de messages sur le forum, ne se font
-      pas en online, mais seulement en offline.
 
     --from=<etape>
 
@@ -196,34 +251,6 @@
       haut du fichier `_visite_testee_run_.rb`.
       Si non définie, on termine à la fin.
       Voir ci-dessous la liste actuelle des étapes.
-
-    --step=<etape>
-
-      Définit la seule étape à jouer. En fait, définit --from et --to en les
-      mettant sur la même valeur.
-      Voir ci-dessous la liste actuelle des étapes.
-
-    --steps=<etape1>,<etape2>,...<etapeN>
-
-      Définit les N étapes à jouer. Noter qu'il ne faut absolument pas d'espaces
-      entre les noms d'étapes. Par exemple :
-
-        --steps=narration,blog,forum
-
-      Noter que le test sera joué **dans l'ordre défini ci-dessus**, et que
-      certains problèmes pourraient survenir de ce fait, intéressants parfois.
-      Voir ci-dessous la liste actuelle des étapes.
-
-    --as=<user[s]|all>
-
-      Définit le statut de l'user qui doit visiter pour faire les tests. En
-      fonction de son statut, certains tests seront modifiés.
-      On peut traiter plusieurs users en les séparant par des virgules :
-          --as=admin,visitor,inscrit    // pas d'espaces !
-
-      <user>
-                __USERS__
-                all         Tous les users possibles sont traités
 
     --exhaustif
 

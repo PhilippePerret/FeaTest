@@ -22,12 +22,52 @@ module FeaTestModule
       # On peut récupérer tous les codes
       # Noter que l'existence des fichiers a déjà été traité, et qu'il n'y a dans
       # paths que des fichiers existants.
-      paths.collect do |path|
-        # TODO Il faudrait écrire le path
-        File.read(path).force_encoding('utf-8')
-      end.join("\n\n")
+      #
+      # Chaque portion de code est enroulé dans un begin-rescue
+      # 
+      full_code =
+        paths.collect do |path|
+          writerpath = "__write_path('#{relative_path path}')\n"
+          code = File.read(path).force_encoding('utf-8')
+
+          code =
+          if code.match(/NEW_SCENARIO/)
+            code.gsub(/NEW_SCENARIO/){
+              <<-EOC
+#{rescue_de_fin_de_feature_test}
+  end # de fin de scénario intercalé
+  #{FeaTest.current.entete_scenario_template(self, utype, writerpath)}
+  begin #--- begin intercalé
+              EOC
+            } 
+          else
+            writerpath + code
+          end
+
+          # On le met dans un begin-rescue
+          <<-EOC
+  #--- FEATURE-CASE #{relative_path path}
+    begin
+    #{code}
+    #{rescue_de_fin_de_feature_test}
+          EOC
+        end.join("\n\n")
+
+      # On épure le code
+      full_code
     end
 
+    def designation
+      @designation ||=
+        begin
+          s = step.downcase
+          description && s << " (#{description})"
+          s
+        end
+    end
+    def rescue_de_fin_de_feature_test
+      @rescue_de_fin_de_feature_test ||= FeaTest.current.build_rescue_de_fin_de_feature(self)
+    end
 
     def paths_tests_can_for utype, arr
       dfeatures = per_user_types[utype]

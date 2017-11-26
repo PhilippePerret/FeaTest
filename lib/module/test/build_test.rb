@@ -53,14 +53,29 @@ module FeaTestModule
 
     feature 'Visite du site testée (par #{human_user(user_type)})', visite: true do
 
-      def retour_accueil
-        say "\#{@pseudo} revient à l’accueil en cliquant sur le lien “Accueil” sous le logo"
-        within('section#header'){click_link 'accueil'}
-      end
       def wait time
         WAIT_COEFFICIANT || return
         sleep WAIT_COEFFICIANT * time
       end
+
+      # Pour marquer le path du fichier inclus
+      def __write_path p
+        message_inclusion p
+      end
+
+      # Pour rouvrir une nouvelle page avec un nouvel user ou le même
+      # mais non connecté
+      def visit_home_page
+        visit "\#{@url}" 
+        notice "\#{@pseudo} arrive sur le site"
+      end
+
+      # Pour comptabiliser le nombre d'erreur
+      def add_error_count
+        @process_error_count ||= 0
+        @process_error_count += 1
+      end
+      def process_error_count ; @process_error_count end
 
       before(:all) do
 
@@ -71,38 +86,22 @@ module FeaTestModule
 
         puts "= @url = \#{@url}, @from_step = \#{@from_step.inspect}, @to_step = \#{@to_step.inspect}"
 
+        puts DELIMITATION
       end
 
-    scenario '=> #{human_user(user_type).titleize} peut visiter les parties testées du site' do
+      # ========== LES LETS =================
+      let(:huser) { @huser ||= begin
+        #{data_user(user_type)}
+      end}
+      let(:pseudo) { @pseudo ||= huser ? huser[:pseudo] : 'inconnu' }
+      let(:user) { @user ||= huser.nil? ? User.new() : User.get(huser[:id]) }
 
-      start_time = Time.now.to_i
+      let(:start_time) { @start_time ||= Time.now }
 
-      puts DELIMITATION
+      # =========== /FIN DES LETS ==============
 
-      #{data_user(user_type)} #-- Données du user --#
+      #{entete_scenario_template(nil, user_type)}
 
-      process_error_count = 0
-
-      # Pour simplifier l'écriture
-      pseudo  = huser ? huser[:pseudo] : 'inconnu'
-      @pseudo = pseudo
-      user =
-        if huser.nil?
-          User.new
-        else
-          User.get(huser[:id])
-        end
-
-      # Tous les visiteurs, quels qu'ils soient, commencent par se rendre
-      # sur la page d'accueil
-      # (sauf qu'il faudra aussi tester des arrivées directes sur certaines
-      #  pages, comme ça arrive depuis un mail)
-      visit "\#{@url}"
-      notice "\#{pseudo} arrive sur le site"
-
-      # Tous les visiteurs, sauf les simples visiteurs, doivent s'identifier
-      # en arrivant sur le site (pour visiter réellement les parties avec leur
-      # statut)
       #{user_type != :visitor ? test_code_for_step_by_user(:signin, user_type) : ''}
 
       # Si on doit commencer les tests depuis le début
@@ -122,6 +121,9 @@ module FeaTestModule
     # étapes nécessaires, pour simplifier le code (et pouvoir isoler plus
     # facilement les fragments qui échouent)
     @tested_steps ||= FeaTest.current.steps_sequence
+    
+    # On ne prend que les étapes qu'il faut tester
+    puts "@tested_steps: #{@tested_steps.inspect}"
 
     # S'il faut jouer les étapes dans un autre aléatoire
     if CLI.option(:random)
@@ -129,9 +131,7 @@ module FeaTestModule
     end
 
     #
-    #
     #=== BOUCLE SUR LES ÉTAPES À TESTER ===
-    #
     #
     @tested_steps.each do |step|
 
@@ -148,11 +148,7 @@ module FeaTestModule
         next
       end
 
-      ref.write(
-        step_template
-        .gsub(/__STEP_NAME__/, step.to_s)
-        .sub(/___FILE_CONTENT___/, codetest)
-      )
+      ref.write(codetest)
     end
 
     # BOUT DU FICHIER
@@ -162,36 +158,31 @@ module FeaTestModule
 
   end
   #/ Fin de méthode créant le fichier
+
+  # Entête du block 'scenario'
+  # C'est cet entête qui permet de remplacer la balise NEW_SCENARIO pour repartir
+  # d'un user "frais"
+  #
+  # Note : cette méthode sert aussi à featest_sheet.rb
+  def entete_scenario_template istep, user_type, pathwriter = ''
+    stepstr =
+    if istep
+      stepref = "#{istep.step.downcase.to_sym.inspect}"
+      istep.description && stepref << " (#{istep.description})"
+      " - STEP: #{stepref}".gsub(/"/, '\"')
+    else
+      ''
+    end
+   <<-EOT
+scenario "SCENARIO END#{stepstr} - USER: #{user_type.inspect}" do
+    #{pathwriter}
+    visit_home_page
+   EOT
+  end
+
   def step_template
     @step_template ||= <<~RSPEC
-    if @from_step == :__STEP_NAME__
-      notice "*** Démarrage du test à partir de __STEP_NAME__ ***"
-      @test_running = true
-    end
-
-    if @test_running
-      begin
-
-      ___FILE_CONTENT___
-
-      rescue Exception => e
-        if !#{CLI.option(:'fail-fast').inspect}
-          failure("Failure dans l'étape :__STEP_NAME__ : \#{e.message}")
-          if #{CLI.option(:debug).inspect}
-            failure(e.backtrace.join("\\n"))
-          end
-          process_error_count += 1
-        else
-          raise e
-        end
-      end
-
-    end #/test_running
-
-    if @to_step == :__STEP_NAME__
-      notice "=== Arrêt des tests à l'étape __STEP_NAME__ ==="
-      @test_running = false
-    end
+    ___FILE_CONTENT___
 
     RSPEC
   end
@@ -203,51 +194,37 @@ module FeaTestModule
   # --------------------------------------------------------------------------------
 
 
+  # Pour créer le rescue de tous les features-case.
+  #
+  # Note : il est utilisé dans featest_sheet.rb, mais comme il n'y a
+  # que le nom de l'étape qui change, on le construit une bonne fois pour
+  # toutes puis on le templatize.
+  def build_rescue_de_fin_de_feature istep
+    template_fin_rescue ||=
+      begin
+        t = Array.new
+        t << "rescue Exception => e"
+        if CLI.option(:'fail-fast')
+          t << "  raise e"
+        else
+          t << "  failure(\"Failure dans l’étape :%s : \#{e.message}\")"
+          if CLI.option(:debug)
+            t << "  failure(e.backtrace.join(\"\\n\"))"
+          end
+        end
+        t << "end"
+        "#{t.join("\n    ")}"
+      end
+    template_fin_rescue % [istep.step.downcase]
+  end
   # Retourne les codes des tests pour l'étape +step+ pour l'user de type +utype+ni
   def test_code_for_step_by_user step, utype
     __dg("-> test_code_for_step_by_user(step=#{step.inspect}, utype=#{utype.inspect})",2)
     istep = FeaTestSheet::ETAPES[step]
     code = FeaTestSheet::ETAPES[step].full_test_code_for(utype)
     code || (return nil)
-
-
-    dutype = istep.per_user_types[utype]
-    dutype || (return nil) # pas d'étape pour ce type d'user
-    puts "dutype: #{dutype.inspect}"
-
-    # On traite déjà ses features
-    dutype[:features].each do |feat|
-      puts "Traitement de sa feature #{feat[:affixe]}"
-    end
-    if dutype[:only_features]
-      # On traite ses features uniques (if any)
-      dutype[:only_features].each do |feat|
-        puts "Traitement de sa feature #{feat[:affixe]}"
-      end
-    end
-    if dutype[:features_out]
-      # On traite ses "features out" (qui ne correspondent pas à des
-      # features d'autres type d'user)
-      dutype[:features_out].each do |feat|
-       puts "Traitement de la feature OUT #{feat[:affixe]}"
-      end
-    end
-    if dutype[:can_act_as_previous]
-      # Donc on doit prendre tous les features du précédent, du précédent du
-      # précédent etc.
-      puts "Il doit agir comme le previous #{dutype[:previous_user]}"
-    end
-    if dutype[:can_not_act_as_next]
-      # Donc on doit vérifier qu'il ne peut pas agir comme le suivant, et le
-      # suivant du suivant, etc.
-      puts "Il ne doit pas agir comme le suivi #{dutype[:next_user]}"
-    end
-
-    fpath = real_file_for_section(step, utype)
-
-    codetest = traite_inclusions_in( fpath )
-    # On supprime tous les commentaires et blancs inutiles
-    codetest = traite_comments_in(codetest)
+    code = traite_inclusions_in(code)
+    #code = traite_comments_in(code)
   end
 
   def preambule_test_file
@@ -276,7 +253,7 @@ module FeaTestModule
    @constantes_test_files ||= <<~EOT
    # Pour ne pas le définir pour chaque test
    if !defined?(DELIMITATION)
-     DELIMITATION      = "*\\n*\\n\#{'*'80}\\n*\\n*"
+     DELIMITATION      = "*\\n*\\n\#{'*'*80}\\n*\\n*"
      ONLINE            = #{(!!CLI.option(:online)).inspect}
      OFFLINE           = !ONLINE
      WAIT_COEFFICIANT  = #{CLI.option(:wait)}
@@ -286,57 +263,28 @@ module FeaTestModule
    end
    EOT
   end
+
   def test_file_footer
-    @test_file_footer ||= <<~RSPEC
-
-        if !#{CLI.option(:'fail-fast').inspect} && process_error_count > 0
-          add =
-            if #{CLI.option(:debug).inspect} != true
-              ''
-            else
-              " Vous pouvez ajouter l'option `--debug` pour afficher les messages complets d'erreur."
-            end
-          raise "\#{process_error_count} erreurs sont survenues au cours du test.\#{add}"
-        end
-
-        puts DELIMITATION
-        wait(5)
-      end
-    end
-
-    RSPEC
-
+    @test_file_footer ||= build_test_file_footer 
   end
-
-  # Retourne le path au fichier +section+ à utiliser en fonction du statut
-  # de l'user visitant le site.
-  #
-  def real_file_for_section section, utype
-    base_section_path = File.join(steps_folder,section.to_s)
-    # On va déterminer le fichier contenant le code de cette étape en fonction :
-    #  * du fait qu'un dossier existe ou que c'est un simple fichier
-    #  * du type de visiteur
-    #  * du fait qu'un fichier existe ou non pour ce visiteur là.
-    if File.directory? base_section_path
-      if File.exist?(File.join(base_section_path,"#{utype}.rb"))
-        File.join(base_section_path,"#{utype}.rb")
-      elsif File.exist?(File.join(base_section_path,"#{utype}_tbs.rb"))
-        File.join(base_section_path,"#{utype}_tbs.rb")
-      elsif File.exist?(File.join(base_section_path,'common_tbs.rb'))
-        File.join(base_section_path,'common_tbs.rb')
-      else
-        File.join(base_section_path,'common.rb')
-      end
-    else
-      "#{base_section_path}.rb"
+  def build_test_file_footer
+    t = Array.new
+    if !CLI.option(:'fail-fast')
+      t << "    if process_error_count > 0"
+      mess = "\#{process_error_count} erreurs sont survenus au cours du test."
+      CLI.option(:debug) || mess << " Vous pouvez jouter l'option `--debug` pour afficher les erreurs."
+      t << "      raise \"#{mess}\""
+      t << "    end"
     end
+    t << "    puts DELIMITATION"
+    t << "    wait(5)"
+    t << "  end # Fin de scénario"
+    t << "end # Fin de feature"
+    return t.join("\n")
   end
 
   # Traite les inclusions dans le code +code+ et retourne le nouveau code
-  def traite_inclusions_in fpath
-    __dg("-> traite_inclusions_in(#{fpath.inspect})",3)
-    File.exist?(fpath) || (return "# [MISSING FILE: #{fpath}]")
-    code = File.read(fpath)
+  def traite_inclusions_in code
     # On regarde si le fichier a des textes inclus
     if code.match(/^[ \t]*<-/)
       code.gsub!(/^[ \t]*<-([a-zA-Z0-9_\/\.]+)$/){
@@ -344,14 +292,14 @@ module FeaTestModule
         "#{traite_inclusions_in(finc)}"
       }
     end
-    return "message_inclusion('#{fpath}')\n#{code}"
+    return code
   end
 
   def traite_comments_in code
     code
       .gsub(/=begin(.*?)=end/m,'')
       .gsub(/# (.*?)\n/,"\n")
-      .gsub(/#\n/,"\n")
+      .gsub(/#[ \t]?\n/,"\n")
       .gsub(/\n\n\n+/,"\n\n")
   end
 

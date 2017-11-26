@@ -54,7 +54,7 @@ module FeaTestModule
           CLI.option(:steps).split(',').collect{|e|e.to_sym}
         end
       else
-        [CLI.option[:step].to_sym]
+        [CLI.option(:step).to_sym]
       end
     steps_valides_or_raise?
   end
