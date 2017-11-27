@@ -4,7 +4,8 @@ class CLI
   # Définit les options courtes (-) vers les longues (--)
   SHORT_OPT_TO_FULL = {
     'r'   => :random,
-    'dg'  => :debug
+    'dg'  => :debug,
+    'p'   => :path
   }
   # Définit l'ordre des paramètres.
   # Permet ensuite de faire `CLI.param(<key>)` pour obtenir la valeur

@@ -32,6 +32,7 @@ module FeaTestModule
 
   end
 
+
   # Méthode principale de création du fichier par type d'user
   # @param {Symbol} user_type
   #                 Le type de l'user pour lequel il faut faire la
@@ -42,73 +43,56 @@ module FeaTestModule
     __dg("-> create_test_file_for_user(user_type=#{user_type.inspect})",2)
     rspec_file_path = File.join(steps_by_users_folder, "#{user_type}_spec.rb")
     ref = File.open(rspec_file_path,'wb')
+
+    # Écriture du début du fichier test pour un user-type particulier
     ref.write(<<~RSPEC)
     #{preambule_test_file}
-    # === REQUIREMENTS ===
-    #{entete_test_files || ''}
-
-    #{exhaustive_method}
-
+    # Pour requérir tout un dossier
+    def require_folder p ; Dir["\#{p}/**/*.rb"].each{|m|require m} end
     #{constantes_test_files}
 
-    feature 'Visite du site testée (par #{human_user(user_type)})', visite: true do
+    # On requiert les méthodes communes à tous les tests, par exemple 
+    # celles pour écrire les messages
+    require_folder File.join('#{THISFOLDER}','lib','asset','spec_helpers')
+    # On requiert les méthodes du site, qui définissent par exemple des
+    # raccourcis pratiques pour cliquer le bouton pour s'identifier, etc.
+    require_folder File.join('#{featest_folder}','required')
 
-      def wait time
-        WAIT_COEFFICIANT || return
-        sleep WAIT_COEFFICIANT * time
-      end
+    # Cette méthode est définie (ou pas) dans le config.rb
+    # Elle permet de faire des premières inclusions
+    #{respond_to?(:entete_test_files) ? entete_test_files : ''}
 
-      # Pour marquer le path du fichier inclus
-      def __write_path p
-        message_inclusion p
+    # Pour pouvoir obtenir les données de l'user depuis n'importe où
+    def __get_data_user
+      FeaTest.current_user_data || begin
+        FeaTest.current_user_data = begin
+         #{data_user(user_type)}
+        end
       end
+    end
 
-      # Pour rouvrir une nouvelle page avec un nouvel user ou le même
-      # mais non connecté
-      def visit_home_page
-        visit "\#{@url}" 
-        notice "\#{pseudo} arrive sur le site"
-      end
+    # Pour avoir accès à des pseudo constantes partout. Par exemple,
+    # le pseudo de l'user courant peut s'obtenir par FTCONSTANTES[:pseudo]
+    # même en dehors des tests proprement dits.
+    unless defined?(FTCONSTANTES)
+      FTCONSTANTES = Hash.new
+    end
+    FTCONSTANTES.merge!(pseudo: __get_data_user[:pseudo])
 
-      # Pour comptabiliser le nombre d'erreur
-      def add_error_count
-        @process_error_count ||= 0
-        @process_error_count += 1
-      end
-      def process_error_count ; @process_error_count || 0 end
+    feature 'Feature-Test of web site tested by #{human_user(user_type)}' do
 
       before(:all) do
-
-        @url = 'http://#{online? ? url_online : url_offline}'
-
-        @from_step = ENV['RSPEC_FROM_STEP'].nil_if_empty ? ENV['RSPEC_FROM_STEP'].to_sym : :start
-        @to_step   = ENV['RSPEC_TO_STEP'].nil_if_empty   ? ENV['RSPEC_TO_STEP'].to_sym : :end
-
-        puts "= @url = \#{@url}, @from_step = \#{@from_step.inspect}, @to_step = \#{@to_step.inspect}"
-
         puts DELIMITATION
       end
 
       # ========== LES LETS =================
-      let(:huser) { @huser ||= begin
-        #{data_user(user_type)}
-      end}
-      let(:pseudo) { @pseudo ||= huser ? huser[:pseudo] : 'inconnu' }
+      let(:huser) { @huser ||= __get_data_user }
+      let(:pseudo) { @pseudo ||= huser ? "\#{huser[:pseudo]} (#{user_type})" : 'inconnu' }
       let(:user) { @user ||= huser.nil? ? User.new() : User.get(huser[:id]) }
-
       let(:start_time) { @start_time ||= Time.now }
-
       # =========== /FIN DES LETS ==============
 
       #{entete_scenario_template(nil, user_type)}
-
-      #{user_type != :visitor ? test_code_for_step_by_user(:signin, user_type) : ''}
-
-      # Si on doit commencer les tests depuis le début
-      if @from_step == :start
-        notice "*** Démarrage du test à partir du début ***"
-        @test_running = true
-      end
 
     RSPEC
 
@@ -178,6 +162,7 @@ module FeaTestModule
 scenario "SCENARIO END#{stepstr} - USER: #{user_type.inspect}" do
     #{pathwriter}
     visit_home_page
+    #{user_type != :visitor ? 'signin_user(FeaTest.current_user_data)' : ''}
    EOT
   end
 
@@ -219,6 +204,11 @@ scenario "SCENARIO END#{stepstr} - USER: #{user_type.inspect}" do
     template_fin_rescue % [istep.step.downcase]
   end
   # Retourne les codes des tests pour l'étape +step+ pour l'user de type +utype+ni
+  #
+  # C'est dans cette méthode qu'on déterminer tous les bouts de feature-code qui
+  # devront être assemblés pour construire un test pour user de type +utype+ et
+  # l'étape +step+ (FeaTestSheet).
+  #
   def test_code_for_step_by_user step, utype
     __dg("-> test_code_for_step_by_user(step=#{step.inspect}, utype=#{utype.inspect})",2)
     istep = FeaTestSheet::ETAPES[step]
@@ -237,32 +227,29 @@ scenario "SCENARIO END#{stepstr} - USER: #{user_type.inspect}" do
     
     =end
 
-    EOT
-  end
-
-  def exhaustive_method
-    @exhaustive_method ||= <<~EOT
-    class Array
-      def exhaust default = 3
-        #{CLI.option(:exhaustif) ? 'self' : 'self.shuffle[0..(default - 1)]'}
+    class FeaTest
+      class << self
+        attr_accessor :current_user_data
       end
-    end #/Array
+    end
     EOT
   end
 
   def constantes_test_files
-   @constantes_test_files ||= <<~EOT
-   # Pour ne pas le définir pour chaque test
-   if !defined?(DELIMITATION)
-     DELIMITATION      = "*\\n*\\n\#{'*'*80}\\n*\\n*"
-     ONLINE            = #{(!!CLI.option(:online)).inspect}
-     OFFLINE           = !ONLINE
-     WAIT_COEFFICIANT  = #{CLI.option(:wait)}
-     DONT_SAY_ANYTHING = #{(CLI.option(:silent)||CLI.option(:quiet)) ? 'true' : 'false'}
-     DEBUG_LEVEL       = #{CLI.option(:'debug-level')}
-     EXHAUSTIF         = #{(!!CLI.option(:exhaustif)).inspect}
-   end
-   EOT
+    @constantes_test_files ||= <<~EOT
+    # Pour ne pas le définir pour chaque test
+    if !defined?(DELIMITATION)
+      BASE_URL          = 'http://#{online? ? url_online : url_offline}'
+      DELIMITATION      = "*\\n*\\n\#{'*'*80}\\n*\\n*"
+      ONLINE            = #{(!!CLI.option(:online)).inspect}
+      OFFLINE           = !ONLINE
+      WAIT_COEFFICIANT  = #{CLI.option(:wait)}
+      DONT_SAY_ANYTHING = #{(CLI.option(:silent)||CLI.option(:quiet)) ? 'true' : 'false'}
+      DEBUG_LEVEL       = #{CLI.option(:'debug-level')}
+      EXHAUSTIF         = #{(!!CLI.option(:exhaustif)).inspect}
+      DISPLAY_PATHS     = #{CLI.option(:path).inspect}
+    end
+    EOT
   end
 
   def test_file_footer

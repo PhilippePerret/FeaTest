@@ -3,7 +3,12 @@ module FeaTestModule
   class FeaTestSheet
 
     # Retourne le code des tests de l'étape pour l'user de
-    # type +utype+
+    # type +utype+ pour l'étape courante.
+    #
+    # C'est dans cette méthode qu'on détermine tous les 
+    # features qui doivent être testés et contre-testés en
+    # fonction du type de l'user +utype+.
+    #
     def full_test_code_for utype
       dfeatures = per_user_types[utype]
       dfeatures || (return nil) # quand il n'y a rien pour ce type d'user
@@ -30,31 +35,45 @@ module FeaTestModule
           writerpath = "__write_path('#{relative_path path}')\n"
           code = File.read(path).force_encoding('utf-8')
 
-          code =
-          if code.match(/NEW_SCENARIO/)
-            code.gsub(/NEW_SCENARIO/){
-              <<-EOC
-#{rescue_de_fin_de_feature_test}
-  end # de fin de scénario intercalé
-  #{FeaTest.current.entete_scenario_template(self, utype, writerpath)}
-  begin #--- begin intercalé
-              EOC
-            } 
+          if code_feature_empty?(code)
+            # TODO On met un message d'alerte pour dire qu'il n'y
+            # a pas de code
+            error "Fichier sans test : #{relative_path path}"
           else
-            writerpath + code
-          end
+            # Sinon, on peut écrire ce code pour le jouer
+            code =
+              if code.match(/NEW_SCENARIO/)
+              code.gsub(/NEW_SCENARIO/){
+                <<-EOC
+  #{rescue_de_fin_de_feature_test}
+    end # de fin de scénario intercalé
+    #{FeaTest.current.entete_scenario_template(self, utype, writerpath)}
+    begin #--- begin intercalé
+                EOC
+              } 
+              else
+                writerpath + code
+              end
 
-          # On le met dans un begin-rescue
-          <<-EOC
-  #--- FEATURE-CASE #{relative_path path}
-    begin
-    #{code}
-    #{rescue_de_fin_de_feature_test}
-          EOC
+            # On le met dans un begin-rescue
+            <<-EOC
+    #--- FEATURE-CASE #{relative_path path}
+      begin
+      #{code}
+      #{rescue_de_fin_de_feature_test}
+            EOC
+          end #/ fin de s'il y a vraiment du code à jouer
         end.join("\n\n")
 
       # On épure le code
       full_code
+    end
+
+    # retourne TRUE si le code +code+ ne contient aucun texte. On le vérifie
+    # en cherchant, après suppression des commentaires, qu'on trouve le mot
+    # `expect`.
+    def code_feature_empty? code
+      !code.gsub(/#(.*)\n/m,"\n").match(/expect/)
     end
 
     def designation

@@ -79,6 +79,11 @@ Options in featest are more than options... They really define tests.
 
   Note : no comma at all in step list.
 
+.B -p/--path
+
+  With this option on, the paths of the feature-code files are written above
+  the test so you can edit them.
+
 .B -r/--random
 
   Run tests randomly.

@@ -14,7 +14,7 @@ module FeaTestModule
           `mkdir -p "#{File.dirname(fpath)}"`
           File.open(fpath,'wb') do |f| 
           f.write <<~EOT
-          say "#{human_feat}"                      
+          say "#{human_feat}"
 
           # DÉFINIR ICI LE CODE DU TEST
           
@@ -50,28 +50,49 @@ module FeaTestModule
     end
     #/check
 
-    #
     def check_utype utype, dtype
       existOrError(utype_folder = steps_folder(utype), 'file')
       dtype[:features].each do |feature|
-        if feature[:affixe]
-          fpath = File.join(utype_folder, "can_#{feature[:affixe]}.rb")
-          existOrError(fpath, 'FEAT', "\#{pseudo} #{feature[:hname]}") 
-        else
-          error("# La fonctionnalité `#{feature[:hname]}` ne définit pas son affixe (*)")
-          FeaTest.current.add_aide_required(:definition_affixe)
+        check_utype_feature(utype, feature)
+      end
+
+      # Check des features propres seulement à l'user-type
+      if dtype[:features_only]
+        dtype[:features_only].each do |feature|
+          check_utype_feature(utype, feature)
         end
       end
 
       # Contre-fonctionnalités
+      if dtype[:features_out]
+        dtype[:features_out].each do |feature|
+          check_utype_cant_feature(utype, feature)
+        end
+      end
       if dtype[:can_not_act_as_next]
        per_user_types[dtype[:next_user]][:features].each do |feature|
-          fpath = File.join(utype_folder, "CANT_#{feature[:affixe]}.rb")
-          existOrError(fpath, 'FEAT', "FAUX : \#{pseudo} #{feature[:hname]}") 
+         check_utype_cant_feature(utype, feature)
         end
       end
     end
     #/check_utype
 
+
+    def check_utype_feature utype, feat
+      if feat[:affixe]
+        fpath = File.join(steps_folder(utype),"can_#{feat[:affixe]}.rb")
+        existOrError(fpath, 'FEAT', "\#{pseudo} #{feat[:hname]}") 
+      else
+        error("# La fonctionnalité `#{feat[:hname]}` ne définit pas son affixe (*)")
+        FeaTest.current.add_aide_required(:definition_affixe)
+      end
+    end
+    def check_utype_cant_feature utype, feat
+      fpath = File.join(steps_folder(utype), "CANT_#{feat[:affixe]}.rb")
+      existOrError(fpath, 'FEAT', "\#{pseudo} #{feature_negative feat[:hname]}") 
+    end
+    def feature_negative hname
+      hname.sub(/(peut|voit|trouve)/,'ne \1 pas') 
+    end
   end #/FeaTestSheet
 end #/FeaTestModule
