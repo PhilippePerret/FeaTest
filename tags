@@ -4,7 +4,7 @@
 !_TAG_PROGRAM_NAME	Exuberant Ctags	//
 !_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
 !_TAG_PROGRAM_VERSION	5.8	//
-Array	lib/module/test/build_test.rb	/^    class Array$/;"	c	class:exhaustive_method
+Array	lib/module/test/build_test.rb	/^    class Array$/;"	c	class:FeaTestModule.create_test_file_for_user.exhaustive_method
 CLI	lib/required/cli.rb	/^class CLI$/;"	c
 FeaTest	lib/required/FeaTest/instance/inst.rb	/^class FeaTest$/;"	c
 FeaTestModule	lib/module/build/main.rb	/^module FeaTestModule$/;"	m
@@ -40,6 +40,7 @@ String	lib/required/extensions/String.rb	/^class String$/;"	c
 __dg	lib/required/divers/messages.rb	/^def __dg msg, dbg_level = 0$/;"	f
 __write_path	lib/module/test/build_test.rb	/^      def __write_path p$/;"	f	class:FeaTestModule.create_test_file_for_user
 add_aide_required	lib/module/check/main.rb	/^  def add_aide_required kaide$/;"	f	class:FeaTestModule
+add_error_count	lib/module/test/build_test.rb	/^      def add_error_count$/;"	f	class:FeaTestModule.create_test_file_for_user
 analyze_sheets	lib/module/sheets/featest_sheets.rb	/^      def analyze_sheets(folder)$/;"	f	class:FeaTestModule.FeaTestSheet
 askFor	lib/required/divers/interactive.1.0.rb	/^def askFor(question, default = nil)$/;"	f	class:askForText
 askForOrRaise	lib/required/divers/interactive.1.0.rb	/^def askForOrRaise(question, msg_error = "Cette donnée est obligatoire")$/;"	f	class:askForText
@@ -47,24 +48,27 @@ askForText	lib/required/divers/interactive.1.0.rb	/^def askForText params$/;"	f
 ask_for_each_param	lib/module/rename/main.rb	/^  def ask_for_each_param feat_name, new_name, relpath$/;"	f	class:FeaTestModule.find_step_in_relpath
 build_all_files	lib/module/build/main.rb	/^  def build_all_files$/;"	f	class:FeaTestModule
 build_and_run_tests	lib/module/test/main.rb	/^  def build_and_run_tests$/;"	f	class:FeaTestModule
+build_rescue_de_fin_de_feature	lib/module/test/build_test.rb	/^  def build_rescue_de_fin_de_feature istep$/;"	f	class:FeaTestModule.create_test_file_for_user
 build_test	lib/module/test/build_test.rb	/^  def build_test$/;"	f	class:FeaTestModule
+build_test_file_footer	lib/module/test/build_test.rb	/^  def build_test_file_footer$/;"	f	class:FeaTestModule.create_test_file_for_user
 check	lib/module/check/featest_sheet.rb	/^    def check options = Hash.new$/;"	f	class:FeaTestModule.FeaTestSheet
 check_and_display	lib/module/check/main.rb	/^  def check_and_display$/;"	f	class:FeaTestModule
 check_etapes	lib/module/check/main.rb	/^  def check_etapes$/;"	f	class:FeaTestModule
 check_utype	lib/module/check/featest_sheet.rb	/^    def check_utype utype, dtype$/;"	f	class:FeaTestModule.FeaTestSheet
 config_file_path	lib/required/FeaTest/instance/paths.rb	/^  def config_file_path$/;"	f	class:FeaTestModule
 config_file_valide?	lib/module/check/main.rb	/^  def config_file_valide?$/;"	f	class:FeaTestModule
-constantes_test_files	lib/module/test/build_test.rb	/^  def constantes_test_files$/;"	f
+constantes_test_files	lib/module/test/build_test.rb	/^  def constantes_test_files$/;"	f	class:FeaTestModule.create_test_file_for_user
 create_test_file_for_user	lib/module/test/build_test.rb	/^  def create_test_file_for_user user_type$/;"	f	class:FeaTestModule
 define_steps	lib/module/test/prepare.rb	/^  def define_steps$/;"	f	class:FeaTestModule
 define_users	lib/module/test/prepare.rb	/^  def define_users$/;"	f	class:FeaTestModule
+designation	lib/module/test/featest_sheet.rb	/^    def designation$/;"	f	class:FeaTestModule.FeaTestSheet.full_test_code_for
 display	lib/module/help/main.rb	/^      def display$/;"	f	class:FeaTestModule.Help
 entete_check_and_display	lib/module/check/main.rb	/^  def entete_check_and_display$/;"	f	class:FeaTestModule
 entete_feedback	lib/module/test/run_test.rb	/^  def entete_feedback$/;"	f	class:FeaTestModule
-entete_scenario_template	lib/module/test/build_test.rb	/^  def entete_scenario_template istep, user_type$/;"	f	class:FeaTestModule
+entete_scenario_template	lib/module/test/build_test.rb	/^  def entete_scenario_template istep, user_type, pathwriter = ''$/;"	f	class:FeaTestModule.create_test_file_for_user
 error	lib/required/divers/messages.rb	/^def error msg$/;"	f
-exhaust	lib/module/test/build_test.rb	/^      def exhaust default = 3$/;"	f	class:exhaustive_method.Array
-exhaustive_method	lib/module/test/build_test.rb	/^  def exhaustive_method$/;"	f
+exhaust	lib/module/test/build_test.rb	/^      def exhaust default = 3$/;"	f	class:FeaTestModule.create_test_file_for_user.exhaustive_method.Array
+exhaustive_method	lib/module/test/build_test.rb	/^  def exhaustive_method$/;"	f	class:FeaTestModule.create_test_file_for_user
 existOrError	lib/module/check/featest_sheet.rb	/^    def existOrError fpath, type = '    ', human_feat$/;"	f	class:FeaTestModule.FeaTestSheet
 existOrError	lib/module/check/utils.rb	/^  def existOrError fpath, type = '    '$/;"	f	class:FeaTestModule
 existOrError	lib/required/divers/handy_methods.rb	/^def existOrError path$/;"	f
@@ -96,34 +100,35 @@ parse	lib/module/sheets/instance/parse.rb	/^    def parse$/;"	f	class:FeaTestMod
 parse	lib/required/cli.rb	/^    def parse$/;"	f	class:CLI
 paths_tests_can_for	lib/module/test/featest_sheet.rb	/^    def paths_tests_can_for utype, arr$/;"	f	class:FeaTestModule.FeaTestSheet.full_test_code_for
 paths_tests_can_not_for	lib/module/test/featest_sheet.rb	/^    def paths_tests_can_not_for utype, arr$/;"	f	class:FeaTestModule.FeaTestSheet.full_test_code_for
-preambule_test_file	lib/module/test/build_test.rb	/^  def preambule_test_file$/;"	f
+preambule_test_file	lib/module/test/build_test.rb	/^  def preambule_test_file$/;"	f	class:FeaTestModule.create_test_file_for_user
 prepare	lib/module/test/prepare.rb	/^  def prepare$/;"	f	class:FeaTestModule
 prepare_build_and_run_test	lib/required/FeaTest/instance/run.rb	/^  def prepare_build_and_run_test$/;"	f	class:FeaTestModule
 proceed_rename	lib/module/rename/main.rb	/^  def proceed_rename params $/;"	f	class:FeaTestModule.find_step_in_relpath
+process_error_count	lib/module/test/build_test.rb	/^      def process_error_count ; @process_error_count || 0 end$/;"	f	class:FeaTestModule.create_test_file_for_user
 rectif_options	lib/required/cli.rb	/^    def rectif_options$/;"	f	class:CLI
 relative_path	lib/required/divers/handy_methods.rb	/^def relative_path path$/;"	f
 relpath	lib/module/check/utils.rb	/^  def relpath fpath$/;"	f	class:FeaTestModule
 rename	lib/module/rename/main.rb	/^  def rename feat_name = nil, new_name = nil, relpath = nil$/;"	f	class:FeaTestModule
 require_folder	lib/required/divers/handy_methods.rb	/^def require_folder fpath$/;"	f
 require_module	lib/required/divers/handy_methods.rb	/^def require_module mname$/;"	f
+rescue_de_fin_de_feature_test	lib/module/test/featest_sheet.rb	/^    def rescue_de_fin_de_feature_test$/;"	f	class:FeaTestModule.FeaTestSheet.full_test_code_for
 run	lib/required/FeaTest/instance/run.rb	/^  def run$/;"	f	class:FeaTestModule
 run_test	lib/module/test/run_test.rb	/^  def run_test$/;"	f	class:FeaTestModule
 search_can_file_in	lib/module/rename/main.rb	/^  def search_can_file_in feat_name, folder$/;"	f	class:FeaTestModule.find_step_in_relpath
 search_cant_file_in	lib/module/rename/main.rb	/^  def search_cant_file_in feat_name, folder$/;"	f	class:FeaTestModule.find_step_in_relpath
 search_feature_relpath	lib/module/rename/main.rb	/^  def search_feature_relpath feat_name$/;"	f	class:FeaTestModule.find_step_in_relpath
-search_for_included_file	lib/module/test/build_test.rb	/^  def search_for_included_file fname, fpath$/;"	f
+search_for_included_file	lib/module/test/build_test.rb	/^  def search_for_included_file fname, fpath$/;"	f	class:FeaTestModule.create_test_file_for_user
 sheets_folder	lib/required/FeaTest/instance/paths.rb	/^  def sheets_folder$/;"	f	class:FeaTestModule
-step_template	lib/module/test/build_test.rb	/^  def step_template$/;"	f	class:FeaTestModule
+step_template	lib/module/test/build_test.rb	/^  def step_template$/;"	f	class:FeaTestModule.create_test_file_for_user
 steps_by_users_folder	lib/required/FeaTest/instance/paths.rb	/^  def steps_by_users_folder$/;"	f	class:FeaTestModule
 steps_folder	lib/module/sheets/instance/paths.rb	/^    def steps_folder as_user = nil$/;"	f	class:FeaTestModule.FeaTestSheet
 steps_folder	lib/required/FeaTest/instance/paths.rb	/^  def steps_folder$/;"	f	class:FeaTestModule
 steps_valides_or_raise?	lib/module/test/prepare.rb	/^  def steps_valides_or_raise?$/;"	f	class:FeaTestModule
-test_code_for_step_by_user	lib/module/test/build_test.rb	/^  def test_code_for_step_by_user step, utype$/;"	f	class:FeaTestModule
-test_file_footer	lib/module/test/build_test.rb	/^  def test_file_footer$/;"	f
+test_code_for_step_by_user	lib/module/test/build_test.rb	/^  def test_code_for_step_by_user step, utype$/;"	f	class:FeaTestModule.create_test_file_for_user
+test_file_footer	lib/module/test/build_test.rb	/^  def test_file_footer$/;"	f	class:FeaTestModule.create_test_file_for_user
 titleize	lib/required/extensions/String.rb	/^  def titleize$/;"	f	class:String
-traite_comments_in	lib/module/test/build_test.rb	/^  def traite_comments_in code$/;"	f
-traite_inclusions_in	lib/module/test/build_test.rb	/^  def traite_inclusions_in code$/;"	f
-traite_new_scenario_in	lib/module/test/build_test.rb	/^  def traite_new_scenario_in code, istep, utype$/;"	f	class:FeaTestModule
+traite_comments_in	lib/module/test/build_test.rb	/^  def traite_comments_in code$/;"	f	class:FeaTestModule.create_test_file_for_user
+traite_inclusions_in	lib/module/test/build_test.rb	/^  def traite_inclusions_in code$/;"	f	class:FeaTestModule.create_test_file_for_user
 visit_home_page	lib/module/test/build_test.rb	/^      def visit_home_page$/;"	f	class:FeaTestModule.create_test_file_for_user
 wait	lib/module/test/build_test.rb	/^      def wait time$/;"	f	class:FeaTestModule.create_test_file_for_user
 yesOrNo	lib/required/divers/interactive.1.0.rb	/^def yesOrNo question$/;"	f	class:askForText

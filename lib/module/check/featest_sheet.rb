@@ -56,7 +56,7 @@ module FeaTestModule
       dtype[:features].each do |feature|
         if feature[:affixe]
           fpath = File.join(utype_folder, "can_#{feature[:affixe]}.rb")
-          existOrError(fpath, 'FEAT', "\#{pseudo} (#{utype.inspect}) #{feature[:hname]}") 
+          existOrError(fpath, 'FEAT', "\#{pseudo} #{feature[:hname]}") 
         else
           error("# La fonctionnalité `#{feature[:hname]}` ne définit pas son affixe (*)")
           FeaTest.current.add_aide_required(:definition_affixe)
@@ -67,7 +67,7 @@ module FeaTestModule
       if dtype[:can_not_act_as_next]
        per_user_types[dtype[:next_user]][:features].each do |feature|
           fpath = File.join(utype_folder, "CANT_#{feature[:affixe]}.rb")
-          existOrError(fpath, 'FEAT', "\#{pseudo} (#{utype.inspect}) ne peut pas : #{feature[:hname]}") 
+          existOrError(fpath, 'FEAT', "FAUX : \#{pseudo} #{feature[:hname]}") 
         end
       end
     end

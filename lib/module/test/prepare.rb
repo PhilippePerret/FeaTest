@@ -52,6 +52,9 @@ module FeaTestModule
           etapes[etapes.index(fr_step)..etapes.index(to_step)]
         when /^.*,.*/
           CLI.option(:steps).split(',').collect{|e|e.to_sym}
+        else
+          # --steps avec une étape unique
+          [CLI.option(:steps).to_sym]
         end
       else
         [CLI.option(:step).to_sym]
