@@ -20,14 +20,24 @@ featest - Test par fonctionnalité et user
 
 .B featest check
 {path/to/file}
-[options]
+[--steps=STEPS]
+[-b/--build]
+[--error-only]
 
   Check les tests du site situé à {path/to/file}. Checker signifie que le programme
   vérifie la correspondance entre la définition des "featest sheets" (feuilles définissant
   les fonctionnalités) et les dossiers et fichiers.
   - Chaque fonctionnalité doit avoir sa définition et sa "contre-définition" (can_not)
   - Chaque fichier doit avoir sa ligne dans une featest sheet.
-  Les options pourront définir des formats de sortie.
+  
+  L'option `step` permet de définir les étapes qui doivent être checkées. Cf. ci-dessous.
+
+  L'option `build` permet de construire les fichiers manquants pendant le check. Cela
+  reproduit la commande `featest build`.
+
+  Si l'option `--error-only` est activée, le rapport de check ou de reconstruction n'affiche
+  que les erreurs rencontrées. Utile lorsqu'on veut se concentrer sur les features-code
+  à établir.
 
 .B featest build
 {path/to/file}
@@ -78,6 +88,8 @@ Options in featest are more than options... They really define tests.
   of steps with `first-last` or a list.
 
   Note : no comma at all in step list.
+  
+  This option can be used with `featest check` or `featest build`.
 
 .B -p/--path
 
@@ -117,9 +129,18 @@ Options in featest are more than options... They really define tests.
   the default value. A value between 0 and 1 accelerates the test, a value greater than
   1 slows down the test, letting the programer taking a look at the interface.
 
-.B --[no-fail-fast
+.B --[no-]fail-fast
 
   As of RSpec, with this option on, tests stop at first error.
+
+.B -b/--build
+
+  With `check` command, this option force the missing building of feature code files
+
+.B --error-only
+
+  With the `check` command and this option activated, only the errors are displaye so
+  we can focus on the missing feature-file or the missing feature-code.
 
 ."
 ." ============= EXAMPLES =============

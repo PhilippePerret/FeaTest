@@ -1,31 +1,6 @@
 # encoding: utf-8
 module FeaTestModule
 
-  def check_and_display
-
-    # On va mettre dans cette liste toutes les aides qui devront être
-    # affichées en fonction des erreurs trouvées. Ces aides permettront
-    # de trouver des solutions rapides.
-    @AIDES_REQUIRED = Hash.new
-
-    # Introduction
-    puts entete_check_and_display
-    
-    require_module 'validation'
-    featest_valide?(check: true) || 
-      begin
-        puts "Poursuite du check impossible si tous les dossiers ne sont pas présents."
-        return
-    end
-
-    config_file_valide?
-
-    require_module 'sheets'
-    FeaTestSheet.analyze_sheets(sheets_folder)
-
-    check_etapes
-  end
-  
   ERRORS = {
     url_online_required:     "Le fichier config.rb devrait définir la méthode `FeaTestModule#url_online`",
     url_offline_required:    "Le fichier config.rb devrait définir la méthode `FeaTestModule#url_offline`",
@@ -50,6 +25,32 @@ module FeaTestModule
     EOH
       
 
+  def check_and_display
+
+    # On va mettre dans cette liste toutes les aides qui devront être
+    # affichées en fonction des erreurs trouvées. Ces aides permettront
+    # de trouver des solutions rapides.
+    @AIDES_REQUIRED = Hash.new
+
+    # Introduction
+    puts entete_check_and_display
+    
+    require_module 'validation'
+    featest_valide?(check: true) || 
+      begin
+        puts "Poursuite du check impossible si tous les dossiers ne sont pas présents."
+        return
+    end
+
+    config_file_valide?
+
+    require_module 'sheets'
+    FeaTestSheet.check
+
+    ending_check
+
+  end
+  
   # S'assure que le fichier congif.rb définisse bien ce qu'il doit
   # obligatoirement définir.
   def config_file_valide?
@@ -63,13 +64,11 @@ module FeaTestModule
   end
   
   # On teste toutes les étapes
-  def check_etapes
+  def ending_check
 
-    # Boucle sur chaque feuille featest (.ftest)
-    FeaTestSheet::ETAPES.each do |ketape, etape|
-      etape.check
-    end
 
+    # Certaines erreurs génèrent une aide qui s'affiche en bas de la
+    # liste, ici.
     unless @AIDES_REQUIRED.empty?
       puts "\n\n====================== AIDES UTILES =========================="
       @AIDES_REQUIRED.keys.each do |kaide|

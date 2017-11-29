@@ -14,7 +14,8 @@ module FeaTestModule
     # Si un fichier config.rb existe, on le joue
     File.exist?(config_file_path) || raise("Le fichier config.rb doit absolument exister.")
     require config_file_path
-    define_steps
+    # provoque la définition de `steps`, les étapes à jouer 
+    steps_valides_or_raise?
     define_users
     __dg("<- prepare",1) 
   end
@@ -36,32 +37,6 @@ module FeaTestModule
     __dg("<- define_users",2)
     __dg("   (AS = #{AS.inspect})")
   end
-  def define_steps
-    etapes = steps_sequence.select{|step| FeaTestSheet::ETAPES.key?(step)}
-    @steps =
-      case CLI.option(:step)
-      when NilClass
-        case CLI.option(:steps)
-        when 'all', NilClass
-          # Toutes les étapes
-          steps_sequence
-        when /^(.*)-(.*)$/ 
-          # Un rang d'étapes
-          fr_step = $1.to_sym
-          to_step = $2.to_sym
-          etapes[etapes.index(fr_step)..etapes.index(to_step)]
-        when /^.*,.*/
-          CLI.option(:steps).split(',').collect{|e|e.to_sym}
-        else
-          # --steps avec une étape unique
-          [CLI.option(:steps).to_sym]
-        end
-      else
-        [CLI.option(:step).to_sym]
-      end
-    steps_valides_or_raise?
-  end
-
   # Vérifie que les étapes existent belles et bien, c'est-à-dire qu'il y ait
   # un dossier dans le dossier des étapes portant le même nom
   def steps_valides_or_raise?

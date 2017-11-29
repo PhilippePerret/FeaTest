@@ -2,7 +2,7 @@
 
 class Array
   def exhaust default = 3
-    #{CLI.option(:exhaustif) ? 'self' : 'self.shuffle[0..(default - 1)]'}
+    CLI.option(:exhaustif) ? self : self.shuffle[0..(default - 1)]
   end
 end #/Array
 

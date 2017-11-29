@@ -23,10 +23,6 @@ module FeaTestModule
   # définition dans les feuilles de featest.
   attr_accessor :steps_sequence
   
-  # Les étapes telles qu'elles se présentent dans les feuilles featest.
-  attr_accessor :steps
-
-
   # Le visiteur qui visite, en version humaine, pour les textes
   def human_user utype
     __dg("-> human_user(utype=#{utype.inspect})",2)
