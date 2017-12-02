@@ -1,6 +1,8 @@
 # encoding: utf-8
 module FeaTestModule
 
+  attr_reader :errors_count
+
   ERRORS = {
     url_online_required:     "Le fichier config.rb devrait définir la méthode `FeaTestModule#url_online`",
     url_offline_required:    "Le fichier config.rb devrait définir la méthode `FeaTestModule#url_offline`",
@@ -26,6 +28,11 @@ module FeaTestModule
       
 
   def check_and_display
+    # La somme totale des erreurs qui vont être rencontrées au cours
+    # de ce check, principalement pour les tests.
+    # Noter que cette propriété exist aussi pour la classe FeaTestSheet
+    # et ses instances.
+    @errors_count = 0
 
     # On va mettre dans cette liste toutes les aides qui devront être
     # affichées en fonction des erreurs trouvées. Ces aides permettront
@@ -34,7 +41,8 @@ module FeaTestModule
 
     # Introduction
     puts entete_check_and_display
-    
+
+
     require_module 'validation'
     featest_valide?(check: true) || 
       begin
@@ -42,27 +50,28 @@ module FeaTestModule
         return
     end
 
+    
     config_file_valide?
 
     require_module 'sheets'
-    FeaTestSheet.check
+    @errors_count += FeaTestSheet.check
 
     ending_check
 
   end
-  
+
   # S'assure que le fichier congif.rb définisse bien ce qu'il doit
   # obligatoirement définir.
   def config_file_valide?
     existOrError(config_file_path) || return
     require config_file_path
-    r = self.respond_to?(:url_online)     || error(ERRORS[:url_online_required])
-    r = r && self.respond_to?(:url_offline)    || error(ERRORS[:url_offline_required])
-    r = r && self.respond_to?(:steps_sequence) || error(ERRORS[:steps_sequence_required])
-    r = r && self.respond_to?(:data_user)      || error(ERRORS[:data_user_required])
+    r = self.respond_to?(:url_online)           || error(ERRORS[:url_online_required])
+    r = r && self.respond_to?(:url_offline)     || error(ERRORS[:url_offline_required])
+    r = r && self.respond_to?(:steps_sequence)  || error(ERRORS[:steps_sequence_required])
+    r = r && self.respond_to?(:data_user)       || error(ERRORS[:data_user_required])
     r && notice("Le fichier config.rb définit toutes les méthodes utiles.")
   end
-  
+
   # On teste toutes les étapes
   def ending_check
 

@@ -3,6 +3,10 @@ module FeaTestModule
   class FeaTestSheet
     class << self
 
+      # La somme d'erreurs de chaque feuille, principalement pour les
+      # tests.
+      attr_reader :errors_count
+
       # Procédure principale qui va checker les feuilles de test et 
       # les corriger au cas où.
       # "Checker les feuilles de test" consiste principalement à
@@ -10,6 +14,8 @@ module FeaTestModule
       # si la commande ou l'option `build` est définie, de les
       # construire pour les coder.
       def check
+
+        @errors_count = 0
         
         # Est-ce que c'est pour une construction ou un simple check
         for_building = CLI.param(2) == 'build' || !!CLI.option(:build)
@@ -38,7 +44,7 @@ module FeaTestModule
         # Boucle sur chaque step, donc chaque feuille .ftest
         ETAPES.each do |ketape, etape|
           if FeaTest.current.steps.include?(ketape) 
-            etape.check(build: for_building)
+            @errors_count += etape.check(build: for_building)
           else
             etapes_passees << ketape
           end
@@ -63,6 +69,8 @@ module FeaTestModule
           notice "Tous les fichiers ont été créés avec succès."
           puts "\n\n"
         end
+
+        return errors_count
       end
       #/check
 

@@ -112,10 +112,10 @@ Options in featest are more than options... They really define tests.
 
   Display debug messages and error backtraces.
 
-.B --exhaustif
+.B --[non-]exhaustif
 
   Traite les tests de façon exaustive, c'est-à-dire que les listes ne sont pas
-  raccourcies.
+  raccourcies. Ou pas, si `non-` est utilisé.
 
 .B --fast
 
@@ -141,6 +141,10 @@ Options in featest are more than options... They really define tests.
 
   With the `check` command and this option activated, only the errors are displaye so
   we can focus on the missing feature-file or the missing feature-code.
+
+B --grade=GRADE
+
+  Define the minimum grade for the user.
 
 ."
 ." ============= EXAMPLES =============

@@ -2,6 +2,7 @@
 module FeaTestModule
 
   ERRMSG = {
+    folder_main_required:     "Le dossier de l’application n’existe même pas… (`%s`)",
     folder_spec_required:     "Le dossier général RSpec devrait exister (`%s`)",
     folder_features_required: "Le dossier `spec/features` devrait exister (`%s`)",
     folder_featest_required:  "Le dossier `spec/features/featest` devrait exister (`%s`)",
@@ -26,17 +27,23 @@ module FeaTestModule
     only_check = !!options[:check]
     valide = true
     {
-      spec:     spec_folder, 
-      features: feat_folder,
-      featest:  featest_folder, 
-      sheets:   sheets_folder, 
-      steps:    steps_folder,
-      home:     File.join(steps_folder,'home'),
-      signin:   File.join(steps_folder, 'signin')
+      main:       main_folder,
+      spec:       spec_folder, 
+      features:   feat_folder,
+      featest:    featest_folder, 
+      sheets:     sheets_folder, 
+      steps:      steps_folder,
+      home:       File.join(steps_folder,'home'),
+      signin:     File.join(steps_folder, 'signin')
     }.each do |key, fpath|
       err_msg = ERRMSG["folder_#{key}_required".to_sym]
       if only_check
-        File.exist?(fpath) || error(err_msg % fpath)
+        File.exist?(fpath) || 
+          begin
+            valide = false
+            @errors_count += 1
+            error(err_msg % fpath)
+        end
       else
         File.existsOrRaise(fpath, err_msg)
       end

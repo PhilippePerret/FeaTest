@@ -45,7 +45,7 @@ module FeaTestModule
     ref = File.open(rspec_file_path,'wb')
 
     # Écriture du début du fichier test pour un user-type particulier
-    ref.write(<<~RSPEC)
+    code_fichier = <<~RSPEC
     #{preambule_test_file}
     # Pour requérir tout un dossier
     def require_folder p ; Dir["\#{p}/**/*.rb"].each{|m|require m} end
@@ -80,11 +80,9 @@ module FeaTestModule
     FTCONSTANTES.merge!(pseudo: __get_data_user[:pseudo])
 
     feature 'Feature-Test of web site tested by #{human_user(user_type)}' do
-
       before(:all) do
         puts DELIMITATION
       end
-
       # ========== LES LETS =================
       let(:huser) { @huser ||= __get_data_user }
       let(:pseudo) { @pseudo ||= huser ? "\#{huser[:pseudo]} (#{user_type})" : 'inconnu' }
@@ -95,6 +93,8 @@ module FeaTestModule
       #{entete_scenario_template(nil, user_type)}
 
     RSPEC
+
+    ref.write(code_fichier)
 
 
     # === LISTE DES ÉTAPES ===
@@ -203,7 +203,11 @@ scenario "SCENARIO END#{stepstr} - USER: #{user_type.inspect}" do
       end
     template_fin_rescue % [istep.step.downcase]
   end
+  
   # Retourne les codes des tests pour l'étape +step+ pour l'user de type +utype+ni
+  #
+  # Note : c'est cette méthode qui retourne le code qui sera écrit dans le fichier
+  # total pour l'utilisateur.
   #
   # C'est dans cette méthode qu'on déterminer tous les bouts de feature-code qui
   # devront être assemblés pour construire un test pour user de type +utype+ et
@@ -212,10 +216,11 @@ scenario "SCENARIO END#{stepstr} - USER: #{user_type.inspect}" do
   def test_code_for_step_by_user step, utype
     __dg("-> test_code_for_step_by_user(step=#{step.inspect}, utype=#{utype.inspect})",2)
     istep = FeaTestSheet::ETAPES[step]
-    code = FeaTestSheet::ETAPES[step].full_test_code_for(utype)
-    code || (return nil)
+    code  = FeaTestSheet::ETAPES[step].full_test_code_for(utype)
+    code || (return '')
     code = traite_inclusions_in(code)
-    #code = traite_comments_in(code)
+    code = traite_comments_in(code)
+    return code
   end
 
   def preambule_test_file

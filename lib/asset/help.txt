@@ -17,7 +17,7 @@
                                      config.rb  -- définitions générales obligatoires
 
   CONFIG.RB FILE
-  ============
+  ==============
 
   Le fichier `config.rb`, à la racine du dossier featest, doit étendre le module
   `FeaTestModule` pour définir des valeurs obligatoires, à savoir :
@@ -237,20 +237,6 @@
         (attention : ça peut prendre la nuit, car ça teste le site de façon
          exhaustive, avec chacun des utilisateurs possibles l'un après l'autre)
 
-
-    --from=<etape>
-
-      Définit l'étape de départ pour le test. La liste des étapes est définie
-      en haut du fichier `_visite_testee_run_.rb` qui construit le test.
-      Si non définie, on commence au début.
-      Voir ci-dessous la liste actuelle des étapes.
-
-    --to=<etape>
-
-      Définit l'étape de fin pour le test. La liste des étapes est définie en
-      haut du fichier `_visite_testee_run_.rb`.
-      Si non définie, on termine à la fin.
-      Voir ci-dessous la liste actuelle des étapes.
 
     --exhaustif
 

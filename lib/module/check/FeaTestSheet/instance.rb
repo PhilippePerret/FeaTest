@@ -3,6 +3,7 @@ module FeaTestModule
   class FeaTestSheet
 
     attr_reader :options
+    attr_reader :errors_count
 
     # On teste l'étape +etape+ (instance FeaTestSheet)
     #
@@ -15,11 +16,16 @@ module FeaTestModule
       # ce qui doit l'être.
       @options = options
 
+      # Pour conserver le nombre d'erreurs. Utile surtout pour les
+      # tests.
+      @errors_count = 0
+
       feature_file_conform?(steps_folder, 'fold')
       per_user_types.each do |utype,dtype|
         check_utype(utype, dtype)
       end
 
+      return @errors_count
     end
     #/check
 
@@ -30,26 +36,35 @@ module FeaTestModule
     # - exister
     # - contenir du test (et pas seulement le code de base)
     #
+    # Cette méthode est la méthode générale utilisée par toutes les
+    # autres pour vérifier la conformité de la définition d'un code de
+    # feature dans un fichier.
+    #
     # Cette méthode écrit une ligne de rapport qui contient :
     #  PATH FICHIER      TYPE   EXISTE   CODE
     def feature_file_conform?(fpath, type = '', human_feat)
 
       file_exists = File.exist?(fpath)
-      code_is_ok = type == 'FEAT' ? feature_code_in?(fpath) : nil
+      File.exist?(fpath) ||
+        begin
+          @errors_count += 1
+          if options[:build] && type == 'FEAT'
+            build_feature_file(fpath, human_feat)
+          else
+            unless options[:build]
+              FeaTest.current.add_aide_required(:fichier_code_test)
+            end
+            puts self.class.line_check_report([relative_path(fpath), type, false, nil])
+            return
+          end
+      end
 
-      if !CLI.option(:'error-only') || !file_exists || false === code_is_ok
-        puts self.class.line_check_report([relative_path(fpath), type, file_exists, code_is_ok])
+      code_is_ok = type == 'FEAT' ? feature_code_in?(fpath) : nil
+      code_is_ok || @errors_count += 1
+      if !CLI.option(:'error-only') || false === code_is_ok
+        puts self.class.line_check_report([relative_path(fpath), type, true, code_is_ok])
       end
       
-      unless file_exists
-        if options[:build] && type == 'FEAT'
-          build_feature_file(fpath, human_feat)
-        else
-          unless options[:build]
-            FeaTest.current.add_aide_required(:fichier_code_test)
-          end
-        end
-      end
     end
 
     # Retourne true si le fichier +fpath+ contient bien du code
@@ -74,6 +89,7 @@ module FeaTestModule
       "= Fichier #{rpath} construit"
     end
 
+    # Méthode qui checke que le fichier feature-code soit conforme.
     def check_utype utype, dtype
       feature_file_conform?(steps_folder(utype), 'file')
       dtype[:features].each do |feature|
@@ -107,6 +123,7 @@ module FeaTestModule
         fpath = File.join(steps_folder(utype),"can_#{feat[:affixe]}.rb")
         feature_file_conform?(fpath, 'FEAT', "\#{pseudo} #{feat[:hname]}")
       else
+        @errors_count += 1
         error("# La fonctionnalité `#{feat[:hname]}` ne définit pas son affixe (*)")
         FeaTest.current.add_aide_required(:definition_affixe)
       end

@@ -52,6 +52,8 @@ end
 
 
 def failure message
+  add_error_count
+  puts "Dans failure, verbose? est #{verbose?.inspect}"
   verbose? || return
   puts "\e[31m#{success_tab}#{message}\e[0m"
   sleep 0.1
@@ -69,4 +71,9 @@ def add_error_count
   @process_error_count ||= 0
   @process_error_count += 1
 end
+
+def reset_error_count
+  @process_error_count = 0
+end
+
 def process_error_count ; @process_error_count || 0 end

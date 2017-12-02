@@ -39,6 +39,7 @@ module FeaTestModule
             # TODO On met un message d'alerte pour dire qu'il n'y
             # a pas de code
             error "Fichier sans test : #{relative_path path}"
+            "# FICHIER SANS TEST : #{relative_path path}\n"
           else
             # Sinon, on peut écrire ce code pour le jouer
             code =
@@ -46,6 +47,13 @@ module FeaTestModule
               code.gsub(/NEW_SCENARIO/){
                 <<-EOC
   #{rescue_de_fin_de_feature_test}
+      # Pour générer une failure rspec s'il y a eu des erreurs
+      if process_error_count > 0
+        # <= Il s'est passé des erreurs au cours du test
+        # => On produit une vrai failure rspec
+        reset_error_count # pour repartir à zéro au prochain test
+        raise "Une erreur s'est produite au cours de ce test"
+      end
     end # de fin de scénario intercalé
     #{FeaTest.current.entete_scenario_template(self, utype, writerpath)}
     begin #--- begin intercalé
@@ -69,11 +77,12 @@ module FeaTestModule
       full_code
     end
 
-    # retourne TRUE si le code +code+ ne contient aucun texte. On le vérifie
+    # retourne TRUE si le code +code+ ne contient aucun test véritable. On le vérifie
     # en cherchant, après suppression des commentaires, qu'on trouve le mot
     # `expect`.
     def code_feature_empty? code
-      !code.gsub(/#(.*)\n/m,"\n").match(/expect/)
+      code_tested = code.gsub(/#(.*)$/,"\n")
+      return !code_tested.match(/expect/)
     end
 
     def designation

@@ -38,11 +38,24 @@ class CLI
     #
     # +key+ doit être défini dans PARAMS_ORDER ci-dessus
     # OU être l'index 1-start des paramètres
-    def param key
+    def param key, value = '__none__'.to_sym 
       case key
-      when Fixnum then ARGS[:params][key - 1]
+      when Hash
+        key.each do |k, v|
+          ARGS[:params][PARAMS_ORDER[k]] = v
+        end
       else
-        ARGS[:params][PARAMS_ORDER[key]]
+        if value == '__none__'.to_sym
+          case key
+          when Fixnum 
+            ARGS[:params][key - 1]
+          else
+            ARGS[:params][PARAMS_ORDER[key]]
+          end
+        else
+          ARGS[:params][PARAMS_ORDER[key]] = value
+          value
+        end
       end
     end
 

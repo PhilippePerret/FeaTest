@@ -12,10 +12,18 @@ featest - Test par fonctionnalit\['e] et user
 Run tests in `path/to/file` folder, as they're defined with `options` (see below).
 .RE
 .PP
-.B featest check {path/to/file} [options]
+.B featest check {path/to/file} [--steps=STEPS] [-b/--build] [--error-only]
 .PP
 .RS
-Check les tests du site situ\['e] \[`a] {path/to/file}. Checker signifie que le programme v\['e]rifie la correspondance entre la d\['e]finition des "featest sheets" (feuilles d\['e]finissant les fonctionnalit\['e]s) et les dossiers et fichiers. - Chaque fonctionnalit\['e] doit avoir sa d\['e]finition et sa "contre-d\['e]finition" (can_not) - Chaque fichier doit avoir sa ligne dans une featest sheet. Les options pourront d\['e]finir des formats de sortie.
+Check les tests du site situ\['e] \[`a] {path/to/file}. Checker signifie que le programme v\['e]rifie la correspondance entre la d\['e]finition des "featest sheets" (feuilles d\['e]finissant les fonctionnalit\['e]s) et les dossiers et fichiers. - Chaque fonctionnalit\['e] doit avoir sa d\['e]finition et sa "contre-d\['e]finition" (can_not) - Chaque fichier doit avoir sa ligne dans une featest sheet. L'option `step` permet de d\['e]finir les \['e]tapes qui doivent \[^e]tre check\['e]es. Cf. ci-dessous.
+.RE
+.PP
+.RS
+L'option `build` permet de construire les fichiers manquants pendant le check. Cela reproduit la commande `featest build`.
+.RE
+.PP
+.RS
+Si l'option `--error-only` est activ\['e]e, le rapport de check ou de reconstruction n'affiche que les erreurs rencontr\['e]es. Utile lorsqu'on veut se concentrer sur les features-code \[`a] \['e]tablir.
 .RE
 .PP
 .B featest build {path/to/file} [options]
@@ -71,7 +79,13 @@ Defines which steps must be ran. It can be a uniq step with `step`, a range of s
 .RE
 .PP
 .RS
-Note : no comma at all in step list.
+Note : no comma at all in step list. This option can be used with `featest check` or `featest build`.
+.RE
+.PP
+.B -p/--path
+.PP
+.RS
+With this option on, the paths of the feature-code files are written above the test so you can edit them.
 .RE
 .PP
 .B -r/--random
@@ -98,10 +112,10 @@ To test ONLINE (test/production)
 Display debug messages and error backtraces.
 .RE
 .PP
-.B --exhaustif
+.B --[non-]exhaustif
 .PP
 .RS
-Traite les tests de fa\[,c]on exaustive, c'est-\[`a]-dire que les listes ne sont pas raccourcies.
+Traite les tests de fa\[,c]on exaustive, c'est-\[`a]-dire que les listes ne sont pas raccourcies. Ou pas, si `non-` est utilis\['e].
 .RE
 .PP
 .B --fast
@@ -116,10 +130,28 @@ Do not pause durint the test. In normal mode, test pauses to let programer takes
 You can slow down or accelerate the pauses during the tests with this option. 1 is the default value. A value between 0 and 1 accelerates the test, a value greater than 1 slows down the test, letting the programer taking a look at the interface.
 .RE
 .PP
-.B --[no-fail-fast
+.B --[no-]fail-fast
 .PP
 .RS
 As of RSpec, with this option on, tests stop at first error.
+.RE
+.PP
+.B -b/--build
+.PP
+.RS
+With `check` command, this option force the missing building of feature code files
+.RE
+.PP
+.B --error-only
+.PP
+.RS
+With the `check` command and this option activated, only the errors are displaye so we can focus on the missing feature-file or the missing feature-code.
+.RE
+.PP
+B --grade=GRADE
+.PP
+.RS
+Define the minimum grade for the user.
 .RE
 .PP
 .SH EXAMPLES
