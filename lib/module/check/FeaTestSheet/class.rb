@@ -42,7 +42,7 @@ module FeaTestModule
         puts delim
 
         # Boucle sur chaque step, donc chaque feuille .ftest
-        ETAPES.each do |ketape, etape|
+        sheets_steps.each do |ketape, etape|
           if FeaTest.current.steps.include?(ketape) 
             @errors_count += etape.check(build: for_building)
           else

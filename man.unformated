@@ -123,7 +123,7 @@ Options in featest are more than options... They really define tests.
   a look at the pages, the forms, the messages, and so on. In fast mode, no pause
   at all.
 
-.B --wait=COEFFICIENT
+.B -w/--wait=COEFFICIENT
 
   You can slow down or accelerate the pauses during the tests with this option. 1 is
   the default value. A value between 0 and 1 accelerates the test, a value greater than

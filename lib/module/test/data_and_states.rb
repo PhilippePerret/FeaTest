@@ -10,7 +10,7 @@ module FeaTestModule
   # Liste des types de user qu'il faut traiter au cours du test courant
   #
   # Attention, ne pas confondre cette liste, qui dépend de la ligne de
-  # commande lançant le test, avec la pseudo-constante FeaTestSheet::USER_TYPES
+  # commande lançant le test, avec la pseudo-constante FeaTestSheet.users_types
   # qui contient la liste des types d'user définis dans les feuilles de
   # FeaTest.
   AS = Array.new
@@ -26,7 +26,7 @@ module FeaTestModule
   # Le visiteur qui visite, en version humaine, pour les textes
   def human_user utype
     __dg("-> human_user(utype=#{utype.inspect})",2)
-    FeaTestSheet::USER_TYPES[utype][:hname] || 'le visiteur quelconque'
+    FeaTestSheet.users_types[utype][:hname] || 'le visiteur quelconque'
   end
 
   # Pour savoir s'il faut jouer les tests online ou offline

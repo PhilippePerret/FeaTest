@@ -30,7 +30,7 @@ module FeaTestModule
     elsif as.match(/,/)
       as.split(',').each{|utype| AS << utype.strip.to_sym}
     elsif as == 'all'
-      FeaTestSheet::USER_TYPES.keys.each{|ut| AS << ut}
+      FeaTestSheet.users_types.keys.each{|ut| AS << ut}
     else
       AS << as.to_sym
     end

@@ -5,15 +5,18 @@
 =end
 module FeaTestModule
 
-  # Méthode principal
+  # Méthode principale
+  #
+  # Si tout se passe bien, la méthode retourne true, sinon false.
   def build_and_run_tests
     require_module 'validation'
-    featest_valide?
+    featest_valide? || (return false)
     Dir.chdir(main_folder) do
       prepare
       build_test
       run_test
     end
+    return true
   end
 
 end #/FeaTestModule

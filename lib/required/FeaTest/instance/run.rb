@@ -1,7 +1,7 @@
 # encoding: utf-8
 module FeaTestModule
   def run
-    puts "Dans FeaTestModule#run, '.' = #{File.expand_path('.')}"
+    # puts "Dans FeaTestModule#run, '.' = #{File.expand_path('.')}"
     CLI.parse
     case CLI.param(1)
     when 'help'

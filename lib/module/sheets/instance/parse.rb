@@ -55,7 +55,7 @@ module FeaTestModule
           error "La ligne '#{line}' n'a pas été traitée."
         end
       end
-      USER_TYPES.merge!(per_user_types)
+      self.class.users_types.merge!(per_user_types)
     end
     #/parse
   end #/FeaTestSheet

@@ -11,6 +11,7 @@ describe "main.rb" do
 
   describe '#check_and_display (méthode principale)' do
     before :each do
+      # On efface tous les messages qui ont pu être produit avant
       FTMessage.reset_messages
     end
     it 'répond' do

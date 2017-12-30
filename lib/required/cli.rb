@@ -1,12 +1,15 @@
 # encoding: utf-8
 class CLI
 
+  defined?(ARGS) || ARGS = Hash.new # peut être défini par les tests
+
   # Définit les options courtes (-) vers les longues (--)
   SHORT_OPT_TO_FULL = {
     'b'   => :build,
     'dg'  => :debug,
     'p'   => :path,
-    'r'   => :random
+    'r'   => :random,
+    'w'   => :wait
   }
   # Définit l'ordre des paramètres.
   # Permet ensuite de faire `CLI.param(<key>)` pour obtenir la valeur
@@ -21,10 +24,7 @@ class CLI
   #    interface de ligne de commande.
   # 
   # --------------------------------------------------------------------------------
-  ARGS = {
-    options: Hash.new,
-    params:  Array.new
-  }
+
   class << self
 
     # Retourne la valeur de l'option +key+
@@ -39,6 +39,7 @@ class CLI
     # +key+ doit être défini dans PARAMS_ORDER ci-dessus
     # OU être l'index 1-start des paramètres
     def param key, value = '__none__'.to_sym 
+      ARGS.key?(:params) || reset_args
       case key
       when Hash
         key.each do |k, v|
@@ -59,7 +60,10 @@ class CLI
       end
     end
 
+    # MÉTHODE PRINCIPALE qui parse la ligne de commande pour en tirer
+    # toutes les informations.
     def parse
+      reset_args
       ARGV.each do |a|
         case a
         when /^--(.*)$/
@@ -80,18 +84,24 @@ class CLI
     end
     #/parse
 
+    # Retourne le niveau de débuggage, en fonction des options choi-
+    # sies ou non pour le définir. Sert principalement aux messages.
+    def debug_level
+      ARGS[:options][:debug_level]
+    end
+    
     # Permet de rectifier certaines valeurs d'options de la
     # commande.
     def rectif_options
       opts = ARGS[:options]
-      opts[:'debug-level'] || opts.merge!(:'debug-level' => 0) 
-      opts[:'debug-level'] = opts[:'debug-level'].to_i
+      opts.delete(:debug) && opts.merge!(:'debug-level' => 5)
+      opts[:debug_level] = (opts.delete(:'debug-level') || 0).to_i
       opts[:'non-exhaustif'] && opts.merge!(exhaustif: false)
       if opts[:fast]
         opts[:wait]   = 0
         opts[:silent] = true
       end
-      opts[:wait] = opts[:wait].nil? ? 1 : opts[:wait].to_i
+      opts[:wait] = opts[:wait].nil? ? 1 : opts[:wait].to_f
       opts[:fail_fast] = !!opts[:'fail-fast']
       ARGS[:options].merge!(opts)
     end
@@ -105,6 +115,13 @@ class CLI
       else
         [paire, true]
       end
+    end
+
+    # Ré-initialisation des valeurs (surtout utile pour les tests,
+    # mais appelé au début du parse de la ligne de commande)
+    def reset_args
+      ARGS[:options] = Hash.new
+      ARGS[:params]  = Array.new
     end
   end #/<< self
 end #/CLI

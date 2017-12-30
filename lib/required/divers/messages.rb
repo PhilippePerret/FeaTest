@@ -8,8 +8,9 @@
 # L'entrée dans les méthodes se met au niveau 2
 # Les valeurs des variables se mettent au niveau 5
 def __dg msg, dbg_level = 0
-  @debug_level ||= CLI.option(:'debug-level')
+  @debug_level ||= CLI.option(:'debug-level') || 0
   @debug_level >= dbg_level || return
+  CLI.debug_level >= dbg_level || return
   puts "--- #{msg}"
 end
 alias :__db :__dg

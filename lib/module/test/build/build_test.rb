@@ -13,7 +13,7 @@ module FeaTestModule
     # On détruit le dossier qui va contenir les feuilles de tests.
     # Rappel : il y en aura une par type de user choisi
     __dg("* Recréation du dossier des étapes par user",3)
-    __db("  steps_by_users_folder : #{steps_by_users_folder}",5) 
+    __db("  steps_by_users_folder : #{steps_by_users_folder}",5)
     FileUtils.rm_rf steps_by_users_folder
     `mkdir -p "#{steps_by_users_folder}"`
 
@@ -23,8 +23,8 @@ module FeaTestModule
     #   défini par l'option --as, qui peut être 'all' pour les prendre tous
     #
     # ---------------------------------------------------------------------
-    __dg("*** Boucle sur chaque type d'user",3) 
-    __dg("    = AS = #{AS.inspect}",5) 
+    __dg("*** Boucle sur chaque type d'user",3)
+    __dg("    = AS = #{AS.inspect}",5)
     AS.each do |utype|
       puts "  * traitement de l'user de type #{utype.inspect}"
       create_test_file_for_user(utype)
@@ -51,7 +51,7 @@ module FeaTestModule
     def require_folder p ; Dir["\#{p}/**/*.rb"].each{|m|require m} end
     #{constantes_test_files}
 
-    # On requiert les méthodes communes à tous les tests, par exemple 
+    # On requiert les méthodes communes à tous les tests, par exemple
     # celles pour écrire les messages
     require_folder File.join('#{THISFOLDER}','lib','asset','spec_helpers')
     # On requiert les méthodes du site, qui définissent par exemple des
@@ -93,6 +93,7 @@ module FeaTestModule
       #{entete_scenario_template(nil, user_type)}
 
     RSPEC
+    # Fin du code du fichier
 
     ref.write(code_fichier)
 
@@ -106,7 +107,7 @@ module FeaTestModule
     # facilement les fragments qui échouent)
     #@tested_steps ||= FeaTest.current.steps_sequence
     @tested_steps ||= FeaTest.current.steps
-    
+
     # On ne prend que les étapes qu'il faut tester
     puts "@tested_steps: #{@tested_steps.inspect}"
 
@@ -126,7 +127,7 @@ module FeaTestModule
       codetest = test_code_for_step_by_user(step, user_type)
 
       # Quelque fois, il n'existe pas de test pour le type d'user courant. Avant,
-      # on utilisait le type `common` mais c'est inutile maintenant. Donc, dans 
+      # on utilisait le type `common` mais c'est inutile maintenant. Donc, dans
       # ce cas, on passe simplement à la suite
       codetest || begin
         __dg("Pas d'étape #{step.inspect} pour le type #{user_type.inspect}. On passe à la suite.")
@@ -176,7 +177,7 @@ scenario "SCENARIO END#{stepstr} - USER: #{user_type.inspect}" do
   # --------------------------------------------------------------------------------
   #
   #    PORTIONS DU FICHIER TEST GÉNÉRAL POUR UN USER-TYPE
-  # 
+  #
   # --------------------------------------------------------------------------------
 
 
@@ -203,7 +204,7 @@ scenario "SCENARIO END#{stepstr} - USER: #{user_type.inspect}" do
       end
     template_fin_rescue % [istep.step.downcase]
   end
-  
+
   # Retourne les codes des tests pour l'étape +step+ pour l'user de type +utype+ni
   #
   # Note : c'est cette méthode qui retourne le code qui sera écrit dans le fichier
@@ -215,8 +216,8 @@ scenario "SCENARIO END#{stepstr} - USER: #{user_type.inspect}" do
   #
   def test_code_for_step_by_user step, utype
     __dg("-> test_code_for_step_by_user(step=#{step.inspect}, utype=#{utype.inspect})",2)
-    istep = FeaTestSheet::ETAPES[step]
-    code  = FeaTestSheet::ETAPES[step].full_test_code_for(utype)
+    istep = FeaTestSheet.sheets_steps[step]
+    code  = FeaTestSheet.sheets_steps[step].full_test_code_for(utype)
     code || (return '')
     code = traite_inclusions_in(code)
     code = traite_comments_in(code)
@@ -226,10 +227,10 @@ scenario "SCENARIO END#{stepstr} - USER: #{user_type.inspect}" do
   def preambule_test_file
     @preambule_test_file ||= <<~EOT
     =begin
-    
+
         CE FICHIER NE DOIT PAS ÊTRE TOUCHÉ, IL EST CONSTRUIT DE FAÇON
         PROGRAMMATIQUE PAR UN SCRIPT (TEST_BY_STEP/build_and_run.rb)
-    
+
     =end
 
     class FeaTest
@@ -258,7 +259,7 @@ scenario "SCENARIO END#{stepstr} - USER: #{user_type.inspect}" do
   end
 
   def test_file_footer
-    @test_file_footer ||= build_test_file_footer 
+    @test_file_footer ||= build_test_file_footer
   end
   def build_test_file_footer
     t = Array.new

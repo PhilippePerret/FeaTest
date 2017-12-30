@@ -42,7 +42,7 @@ module FeaTestModule
 
     ========== FEATEST LANCÉ EN #{online? ? 'ONLINE' : 'OFFLINE'} ============
     = Date et temps    : #{Time.now.strftime('%d %m %Y à %H:%M')}
-    = Users types      : #{FeaTestSheet::USER_TYPES.keys.pretty_join}
+    = Users types      : #{FeaTestSheet.users_types.keys.pretty_join}
     = Ordre            : #{CLI.option(:random) ? 'aléatoire' : 'normal'}
     = Ordre des étapes : #{@tested_steps.pretty_join}
     = Coefficiant wait : #{CLI.option(:wait)}#{CLI.option(:wait) == 0 ? ' (fast)' : ''}

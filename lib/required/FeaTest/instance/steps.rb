@@ -3,7 +3,7 @@ module FeaTestModule
   def steps
     @steps ||=
       begin
-        etapes   = steps_sequence.select{|step| FeaTestSheet::ETAPES.key?(step)}
+        etapes   = steps_sequence.select{|step| FeaTestSheet.sheets_steps.key?(step)}
         # On prend les étapes choisies soit de l'option `steps` soit de 
         # l'option `step`
         opts_steps = CLI.option(:steps) || CLI.option(:step)
