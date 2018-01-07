@@ -5,7 +5,7 @@
     Construit une nouvelle application-test à partir des données +params+
 
     +params+
-      
+
       :steps    La liste des étapes. Défaut : [:signin, :home]
       :url_online   URL online. Défaut : 'app-test.alwaysdata.net'
       :url_offline  URL offline. Défaut : 'localhost/tests/appfeat'
@@ -36,7 +36,7 @@ class AppFeaTest
   # --------------------------------------------------------------------------------
   #
   #    MÉTHODES DE CONSTRUCTION DE L'APPLICATION-TEST
-  # 
+  #
   # --------------------------------------------------------------------------------
   def build params = Hash.new
     params = default_params(params)
@@ -48,8 +48,14 @@ class AppFeaTest
         `mkdir -p "#{steps_folder}/#{step}/#{utype}"`
       end
     end
+
+    # Pour initier les tests
+    Dir.chdir(APP_TEST_PATH) do
+      `rspec --init`
+    end
+
     build_config_file params
-    build_home_ftest_file 
+    build_home_ftest_file
     build_signin_ftest_file
   end
 
@@ -66,11 +72,11 @@ class AppFeaTest
     params[:data_user].key?(:suscriber)   || params[:data_user].merge!(suscriber: default_data_suscriber)
     return params
   end
-  
+
   # --------------------------------------------------------------------------------
   #
   #    CONSTRUCTION DES FICHIERS REQUIS
-  # 
+  #
   # --------------------------------------------------------------------------------
   def build_config_file params = Hash.new
 
@@ -84,7 +90,7 @@ class AppFeaTest
 
       # === LISTE DES ÉTAPES ===
       def steps_sequence
-        @steps_sequence ||= [:#{params[:steps].join(', :')}] 
+        @steps_sequence ||= [:#{params[:steps].join(', :')}]
       end
 
       def url_online  ; '#{params[:url_online]}'  end
@@ -162,25 +168,25 @@ class AppFeaTest
   # --------------------------------------------------------------------------------
   #
   #    MÉTHODES FONCTIONNELLES
-  # 
+  #
   # --------------------------------------------------------------------------------
   def remove
     if File.exist?(APP_TEST_PATH)
       require 'fileutils'
-      FileUtils.rm_rf APP_TEST_PATH 
+      FileUtils.rm_rf APP_TEST_PATH
     end
   end
 
   # --------------------------------------------------------------------------------
   #
   #    CHEMINS D'ACCÈS
-  # 
+  #
   # --------------------------------------------------------------------------------
   def config_file_path
     @config_file_path ||= File.join(APP_FEATEST_FOLDER,'config.rb')
   end
   def sheets_folder
-    @sheets_folder ||= File.join(APP_FEATEST_FOLDER,'sheets') 
+    @sheets_folder ||= File.join(APP_FEATEST_FOLDER,'sheets')
   end
   def steps_folder
     @steps_folder ||= File.join(APP_FEATEST_FOLDER,'steps')

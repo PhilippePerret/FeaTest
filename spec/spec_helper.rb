@@ -27,9 +27,16 @@ RSpec.configure do |config|
     @apptest ||=
       begin
         CLI.param(file_path: APP_TEST_PATH)
-        FeaTest.new 
+        FeaTest.new
       end
   end
+
+  # Pour écrire un message en console (ou en retour, quand CMD+i est utilisé
+  # dans atom)
+  def log mess
+    STDOUT.write "--- #{mess}\n"
+  end
+
   # rspec-expectations config goes here. You can use an alternate
   # assertion/expectation library such as wrong or the stdlib/minitest
   # assertions if you prefer.

@@ -13,8 +13,9 @@ module FeaTestModule
       # Toutes les "steps", les étapes ou les sections du site ou de l'application
       # Elles sont récoltées dans les sheets .ftest
       #
-      # Note test : pour pouvoir accès à ces propriétés, puisqu'elles se trouvent
-      # définies dans un module, il faut le requérir par `require_module('sheets')`
+      # Note test : pour avoir accès à ces propriétés, puisqu'elles se trouvent
+      # définies dans un module, il faut le requérir par
+      # `require_module('sheets')`
       def sheets_steps
         @sheets_steps ||= Hash.new
       end
@@ -24,7 +25,7 @@ module FeaTestModule
       # Contiendra tous les users types récoltés dans chaque featest sheet, contrairement
       # à la propriété per_user_types qui correspond à une sheet en particulier.
       #
-      # Cf. la note ci-dessu pour les tests.
+      # Cf. la note ci-dessus pour les tests.
       def users_types
         @users_types ||= Hash.new
       end
@@ -51,5 +52,4 @@ module FeaTestModule
     end #/<< self
 
   end #/FeaTestSheet
-end#/module 
-
+end#/module

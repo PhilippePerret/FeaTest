@@ -12,10 +12,7 @@ module FeaTestModule
 
     # On détruit le dossier qui va contenir les feuilles de tests.
     # Rappel : il y en aura une par type de user choisi
-    __dg("* Recréation du dossier des étapes par user",3)
-    __db("  steps_by_users_folder : #{steps_by_users_folder}",5)
-    FileUtils.rm_rf steps_by_users_folder
-    `mkdir -p "#{steps_by_users_folder}"`
+    build_folder_test_files_per_user
 
     # ---------------------------------------------------------------------
     #
@@ -30,6 +27,15 @@ module FeaTestModule
       create_test_file_for_user(utype)
     end
 
+  end
+
+  # Reconstruction du dossier contenant toutes les feuilles complètes
+  # de test par type de user
+  def build_folder_test_files_per_user
+    __dg("* Recréation du dossier des étapes par user",3)
+    __db("  steps_by_users_folder : #{steps_by_users_folder}",5)
+    FileUtils.rm_rf steps_by_users_folder
+    `mkdir -p "#{steps_by_users_folder}"`
   end
 
 
@@ -249,9 +255,9 @@ scenario "SCENARIO END#{stepstr} - USER: #{user_type.inspect}" do
       DELIMITATION      = "*\\n*\\n\#{'*'*80}\\n*\\n*"
       ONLINE            = #{(!!CLI.option(:online)).inspect}
       OFFLINE           = !ONLINE
-      WAIT_COEFFICIANT  = #{CLI.option(:wait)}
+      WAIT_COEFFICIANT  = #{CLI.option(:wait) || 1}
       DONT_SAY_ANYTHING = #{(CLI.option(:silent)||CLI.option(:quiet)) ? 'true' : 'false'}
-      DEBUG_LEVEL       = #{CLI.option(:'debug-level')}
+      DEBUG_LEVEL       = #{CLI.option(:'debug-level') || CLI.option(:debug_level) || 0}
       EXHAUSTIF         = #{(!!CLI.option(:exhaustif)).inspect}
       DISPLAY_PATHS     = #{CLI.option(:path).inspect}
     end

@@ -1,27 +1,34 @@
 # encoding: utf-8
 module FeaTestModule
 
-  # Première étape : préparation de la construction du 
+  # Première étape : préparation de la construction du
   # test.
   # C'est ici qu'on prend toutes les options définies et
   # qu'on en tire les spécificités du test à mener.
   #
   def prepare
     __dg("-> prepare",1)
-    require_module 'sheets'
-    FeaTestSheet.analyze_sheets(sheets_folder)
+
+    define_sheets_steps
+
+    require 'rspec'
     require './spec/spec_helper'
     # Si un fichier config.rb existe, on le joue
     File.exist?(config_file_path) || raise("Le fichier config.rb doit absolument exister.")
     require config_file_path
-    # provoque la définition de `steps`, les étapes à jouer 
+    # provoque la définition de `steps`, les étapes à jouer
     steps_valides_or_raise?
     define_users
-    __dg("<- prepare",1) 
+    __dg("<- prepare",1)
+  end
+
+  def define_sheets_steps
+    require_module 'sheets'
+    FeaTestSheet.analyze_sheets(sheets_folder)
   end
 
   def define_users
-    __dg("-> define_users",2) 
+    __dg("-> define_users",2)
     # Le ou les types de user à traiter
     as = CLI.option(:as)
     __dg("   --as=#{as.inspect}",4)

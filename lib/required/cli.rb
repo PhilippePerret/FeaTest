@@ -5,10 +5,13 @@ class CLI
 
   # Définit les options courtes (-) vers les longues (--)
   SHORT_OPT_TO_FULL = {
+    'a'   => :aide,
     'b'   => :build,
     'dg'  => :debug,
+    'm'   => :man,
     'p'   => :path,
     'r'   => :random,
+    't'   => :tuto,
     'w'   => :wait
   }
   # Définit l'ordre des paramètres.
@@ -22,7 +25,7 @@ class CLI
   #
   #    Tout ce qu'il y a en dessous peut être commun à n'importe quel
   #    interface de ligne de commande.
-  # 
+  #
   # --------------------------------------------------------------------------------
 
   class << self
@@ -38,7 +41,7 @@ class CLI
     #
     # +key+ doit être défini dans PARAMS_ORDER ci-dessus
     # OU être l'index 1-start des paramètres
-    def param key, value = '__none__'.to_sym 
+    def param key, value = '__none__'.to_sym
       ARGS.key?(:params) || reset_args
       case key
       when Hash
@@ -48,7 +51,7 @@ class CLI
       else
         if value == '__none__'.to_sym
           case key
-          when Fixnum 
+          when Fixnum
             ARGS[:params][key - 1]
           else
             ARGS[:params][PARAMS_ORDER[key]]
@@ -89,7 +92,7 @@ class CLI
     def debug_level
       ARGS[:options][:debug_level]
     end
-    
+
     # Permet de rectifier certaines valeurs d'options de la
     # commande.
     def rectif_options
@@ -106,9 +109,9 @@ class CLI
       ARGS[:options].merge!(opts)
     end
 
-    
+
     def get_prop_value paire
-      if paire.match(/=/) 
+      if paire.match(/=/)
         prop, val = paire.split('=')
         val.gsub!(/^["']?(.*)["']?$/,'\1')
         [prop, val]

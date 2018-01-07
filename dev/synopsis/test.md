@@ -49,14 +49,18 @@ Le programmeur joue la commande :
         Sinon, poursuit.
       * Se place dans le dossier de l'application
       * prepare les tests     #prepare
-            Vérifie que les fichiers de test (test sheet) existent et
-            prépare les utilisateurs qui vont être testés (:as) avec la
-            méthode `#define_users` qui définit la pseudo-constante `AS` qui
-            contient les users "symboliques" (:visitor, etc.)
+          Vérifie que les fichiers de test (test sheet) existent et
+          prépare les utilisateurs qui vont être testés (:as) avec la
+          méthode `#define_users` qui définit la pseudo-constante `AS` qui
+          contient les users "symboliques" (:visitor, etc.)
+          cf. ci-dessous.
       * construit les tests   #build_test
           La méthode `#build_test` construit chaque feuille de test pour un
-          user de niveau déterminé (simplement visiteur, inscrit, admin, etc.)
+          user de niveau déterminé (simple visiteur, inscrit, admin, etc.)
+          Cf. ci-dessous.
       * joue les tests        #run_test
+          Utilise RSpec pour jouer les feuilles de tests qui ont été préparées.
+          Cf. ci-dessous.
       * retourne true
 
 ### Détail des procédures ci-dessus
